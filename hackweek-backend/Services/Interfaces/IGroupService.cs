@@ -6,9 +6,9 @@ namespace hackweek_backend.Services.Interfaces
     {
         Task<IEnumerable<GroupModel>> GetGroups();
         Task<GroupModel?> GetGroupById(int id);
-        Task CreateGroup(GroupModel Group);
+        Task CreateGroup(GroupModel request);
         Task DeleteGroup(int id);
-        Task UpdateGroup(int id, GroupModel Group);
+        Task UpdateGroup(int id, GroupModel request);
 
         Task<IEnumerable<GroupModel>> GetGroupsByProposition(int idProposition);
         Task<IEnumerable<GroupModel>> GetGroupsOnQueue();
