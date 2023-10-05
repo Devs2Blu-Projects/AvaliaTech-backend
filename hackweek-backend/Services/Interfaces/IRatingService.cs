@@ -7,9 +7,9 @@ namespace hackweek_backend.Services.Interfaces
     {
         Task<IEnumerable<RatingModel>> GetRatings();
         Task<RatingModel?> GetRatingById(int id);
-        Task CreateRating(RatingModel user);
+        Task CreateRating(RatingModel request);
         Task DeleteRating(int id);
-        Task UpdateRating(int id, RatingModel user);
+        Task UpdateRating(int id, RatingModel request);
 
         Task<IEnumerable<RatingModel>> GetRatingsByUser(int idUser);
         Task<IEnumerable<RatingModel>> GetRatingsByGroup(int idUser);

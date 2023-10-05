@@ -6,9 +6,9 @@ namespace hackweek_backend.Services.Interfaces
     {
         Task<IEnumerable<CriterionModel>> GetCriteria();
         Task<CriterionModel?> GetCriterionById(int id);
-        Task CreateCriterion(CriterionModel user);
+        Task CreateCriterion(CriterionModel request);
         Task DeleteCriterion(int id);
-        Task UpdateCriterion(int id, CriterionModel user);
+        Task UpdateCriterion(int id, CriterionModel request);
 
         Task<IEnumerable<CriterionModel>> GetCriteriaByProposition(int idProposition);
     }

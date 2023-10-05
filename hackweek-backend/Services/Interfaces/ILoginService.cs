@@ -5,6 +5,6 @@ namespace hackweek_backend.Services.Interfaces
 {
     public interface ILoginService
     {
-        Task Login(LoginDto login);
+        Task Login(LoginDto request);
     }
 }
