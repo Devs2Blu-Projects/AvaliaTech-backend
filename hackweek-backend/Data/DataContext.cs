@@ -7,13 +7,13 @@ namespace hackweek_backend.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-        DbSet<UserModel> Users { get; set; }
-        DbSet<GroupModel> Groups { get; set; }
-        DbSet<RatingModel> Ratings { get; set; }
-        DbSet<CriterionModel> Criteria { get; set; }
-        DbSet<PropositionModel> Propositions { get; set; }
-        DbSet<RatingCriterionModel> RatingCriteria { get; set; }
-        DbSet<PropositionCriterionModel> PropositionsCriteria { get; set; }
+        public DbSet<UserModel> Users { get; set; }
+        public DbSet<GroupModel> Groups { get; set; }
+        public DbSet<RatingModel> Ratings { get; set; }
+        public DbSet<CriterionModel> Criteria { get; set; }
+        public DbSet<PropositionModel> Propositions { get; set; }
+        public DbSet<RatingCriterionModel> RatingCriteria { get; set; }
+        public DbSet<PropositionCriterionModel> PropositionsCriteria { get; set; }
 
         protected override void OnModelCreating (ModelBuilder modelBuilder)
         {

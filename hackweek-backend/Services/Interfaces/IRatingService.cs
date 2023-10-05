@@ -1,4 +1,5 @@
 using Azure.Core;
+using hackweek_backend.DTOs;
 using hackweek_backend.Models;
 
 namespace hackweek_backend.Services.Interfaces
@@ -7,7 +8,7 @@ namespace hackweek_backend.Services.Interfaces
     {
         Task<IEnumerable<RatingModel>> GetRatings();
         Task<RatingModel?> GetRatingById(int id);
-        Task CreateRating(RatingModel user);
+        Task CreateRating(RatingDTO rating);
         Task DeleteRating(int id);
         Task UpdateRating(int id, RatingModel user);
 
