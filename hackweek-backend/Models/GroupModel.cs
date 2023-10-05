@@ -14,5 +14,6 @@
         public int PropositionId { get; set; }
         public UserModel? User { get; set; }
         public PropositionModel? Proposition { get; set; }
+        public List<GroupRatingModel>? GroupRatings { get; set; }
     }
 }
