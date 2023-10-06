@@ -1,3 +1,4 @@
+using hackweek_backend.DTOs;
 using hackweek_backend.Models;
 
 namespace hackweek_backend.Services.Interfaces
@@ -6,8 +7,8 @@ namespace hackweek_backend.Services.Interfaces
     {
         Task<IEnumerable<PropositionModel>> GetPropositions();
         Task<PropositionModel?> GetPropositionById(int id);
-        Task CreateProposition(PropositionModel request);
+        Task CreateProposition(PropositionDTO request);
         Task DeleteProposition(int id);
-        Task UpdateProposition(int id, PropositionModel request);
+        Task UpdateProposition(int id, PropositionDTO request);
     }
 }
