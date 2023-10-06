@@ -11,7 +11,7 @@
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int UserId { get; set; }
-        public int PropositionId { get; set; }
+        public int? PropositionId { get; set; }
         public UserModel? User { get; set; }
         public PropositionModel? Proposition { get; set; }
         public List<GroupRatingModel>? GroupRatings { get; set; }
