@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using hackweek_backend.DTOs;
-using Microsoft.AspNetCore.Authorization;
 
 namespace hackweek_backend.Controllers
 {
@@ -18,13 +17,13 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
             return Ok(await _service.GetUsers());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserModel?>> GetUserById(int id)
+        public async Task<ActionResult<UserDto?>> GetUserById(int id)
         {
             var user = await _service.GetUserById(id);
             if (user == null) return NotFound("Usuário não encontrado!");
@@ -33,7 +32,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateUser(UserModel request)
+        public async Task<ActionResult> CreateUser(UserDtoInsert request)
         {
             try
             {
@@ -61,7 +60,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUser(int id, UserDto request)
+        public async Task<ActionResult> UpdateUser(int id, UserDtoUpdate request)
         {
             try
             {
@@ -75,7 +74,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("/role/{role}")]
-        public async Task<ActionResult<IEnumerable<UserModel>>> GetUsersByRole(string role)
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersByRole(string role)
         {
             return Ok(await _service.GetUsersByRole(role));
         }

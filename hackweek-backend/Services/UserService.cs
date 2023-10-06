@@ -1,3 +1,4 @@
+using Azure.Core;
 using hackweek_backend.Data;
 using hackweek_backend.DTOs;
 using hackweek_backend.Models;
@@ -9,24 +10,49 @@ namespace hackweek_backend.Services
     public class UserService : IUserService
     {
         private readonly DataContext _context;
+        private readonly string[] _allowCreateRoleList = {
+            UserRoles.Admin,
+            UserRoles.Group,
+            UserRoles.User,
+        };
+        private readonly string[] _allowGetByRoleList = {
+            UserRoles.Group,
+            UserRoles.User,
+        };
 
         public UserService(DataContext context) { _context = context; }
 
-        public async Task<IEnumerable<UserModel>> GetUsers()
+        public async Task<IEnumerable<UserDto>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                .Select(u => new UserDto(u))
+                .ToListAsync();
         }
         
-        public async Task<UserModel?> GetUserById(int id)
+        public async Task<UserDto?> GetUserById(int id)
         {
-            return await _context.Users.FindAsync(id);
-        }
-        
-        public async Task CreateUser(UserModel request)
-        {
-            if (_context.Users.FirstOrDefault(u => u.Username == request.Username) != null) throw new Exception("Nome de usuário já cadastrado!");
+            var user = await _context.Users.FindAsync(id);
 
-            await _context.Users.AddAsync(request);
+            if (user == null) return null;
+
+            return new UserDto(user);
+        }
+
+        public async Task CreateUser(UserDtoInsert request)
+        {
+            if (_context.Users.FirstOrDefault(u => u.Username == request.Username) != null) throw new Exception($"Usuário já cadastrado! ({request.Username})");
+
+            if (_allowCreateRoleList.FirstOrDefault(r => r == request.Role) == null) throw new Exception($"Cargo inválido! ({request.Role})");
+
+            var model = new UserModel
+            {
+                Username = request.Username,
+                Name = request.Name,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Role = request.Role,
+            };
+
+            await _context.Users.AddAsync(model);
             await _context.SaveChangesAsync();
         }
 
@@ -39,21 +65,26 @@ namespace hackweek_backend.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateUser(int id, UserDto request)
+        public async Task UpdateUser(int id, UserDtoUpdate request)
         {
-            if (request.Id != id) throw new Exception("Usuário possui Id diferente do informado!");
+            if (request.Id != id) throw new Exception("Id diferente do usuário informado!");
 
-            var user = await _context.Users.FindAsync(id) ?? throw new Exception("Usuário não encontrado!");
+            var user = await _context.Users.FindAsync(id) ?? throw new Exception($"Usuário não encontrado! ({request.Username})");
 
             user.Username = request.Username;
             user.Name = request.Name;
+            if (request.Password != string.Empty) user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<UserModel>> GetUsersByRole(string role)
+        public async Task<IEnumerable<UserDto>> GetUsersByRole(string role)
         {
-            return await _context.Users.Where(u => u.Role == role).ToListAsync();
+            if (_allowGetByRoleList.FirstOrDefault(r => r == role) == null) return new List<UserDto>();
+
+            return await _context.Users.Where(u => u.Role == role)
+                .Select(u => new UserDto(u))
+                .ToListAsync();
         }
     }
 }

@@ -5,12 +5,12 @@ namespace hackweek_backend.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserModel>> GetUsers();
-        Task<UserModel?> GetUserById(int id);
-        Task CreateUser(UserModel request);
+        Task<IEnumerable<UserDto>> GetUsers();
+        Task<UserDto?> GetUserById(int id);
+        Task CreateUser(UserDtoInsert request);
         Task DeleteUser(int id);
-        Task UpdateUser(int id, UserDto request);
+        Task UpdateUser(int id, UserDtoUpdate request);
 
-        Task<IEnumerable<UserModel>> GetUsersByRole(string role);
+        Task<IEnumerable<UserDto>> GetUsersByRole(string role);
     }
 }
