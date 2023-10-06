@@ -6,13 +6,17 @@ namespace hackweek_backend.Services.Interfaces
 {
     public interface IRatingService
     {
-        Task<IEnumerable<RatingModel>> GetRatings();
-        Task<RatingModel?> GetRatingById(int id);
+        Task<List<RatingGetDTO>> GetAllRatingsByAvaliador();
+        //Task<RatingModel?> GetRatingById(int id);
         Task CreateRating(RatingDTO rating);
-        Task DeleteRating(int id);
-        Task UpdateRating(int id, RatingModel user);
+        Task DeleteRatingByAvaliadorById(int id);
+        Task<RatingGetDTO> GetRatingByIdByAvaliador(int id);
+        int CalculateFinalGradeByAvaliador(int id);
+        int CalculateFinalGradeByGroup(int idGrupo);
 
-        Task<IEnumerable<RatingModel>> GetRatingsByUser(int idUser);
-        Task<IEnumerable<RatingModel>> GetRatingsByGroup(int idUser);
+        Task UpdateRating(int id, RatingModel request);
+
+        //Task<IEnumerable<RatingModel>> GetRatingsByUser(int idUser);
+        Task<List<RatingGetDTO>> GetAllRatingsByGroup(int idGroup);
     }
 }
