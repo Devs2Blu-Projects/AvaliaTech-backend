@@ -1,6 +1,8 @@
+global using Microsoft.EntityFrameworkCore;
 using hackweek_backend.Data;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using hackweek_backend.Services.Interfaces;
+using hackweek_backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

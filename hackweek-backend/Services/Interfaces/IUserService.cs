@@ -12,6 +12,5 @@ namespace hackweek_backend.Services.Interfaces
         Task UpdateUser(int id, UserDto request);
 
         Task<IEnumerable<UserModel>> GetUsersByRole(string role);
-        Task<IEnumerable<UserModel>> GetUsersByCourse(string course);
     }
 }
