@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using hackweek_backend.Models;
 using hackweek_backend.Services;
+using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -11,8 +12,8 @@ namespace hackweek_backend.Controllers
     [ApiController]
     public class CriterionController : ControllerBase
     {
-        private readonly CriterionService _service;
-        public CriterionController(CriterionService Service)
+        private readonly ICriterionService _service;
+        public CriterionController(ICriterionService Service)
         {
             _service = Service;
         }
@@ -73,7 +74,7 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpGet("{IdPropsition}")]
+        [HttpGet("proposition/{IdProposition}")]
         public async Task<IActionResult> GetCriteriaByProposition(int IdProposition)
         {
             try

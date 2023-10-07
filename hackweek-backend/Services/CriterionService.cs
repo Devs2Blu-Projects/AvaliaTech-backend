@@ -18,9 +18,9 @@ namespace hackweek_backend.Services
 
         async public Task DeleteCriterion(int id)
         {
-            var criteria = await _context.Criteria.FindAsync(id);
+            var criteria = await _context.Criteria.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (criteria != null) throw new ArgumentException("ID não encontrado");
+            if (criteria == null) throw new ArgumentException("ID não encontrado");
             
             _context.Criteria.Remove(criteria);
             await _context.SaveChangesAsync();
@@ -45,7 +45,7 @@ namespace hackweek_backend.Services
 
         async public Task UpdateCriterion(int id, CriterionModel request)
         {
-            var criteria = _context.Criteria.FirstOrDefault(c => c.Id == id);
+            var criteria = await _context.Criteria.FirstOrDefaultAsync(c => c.Id == id);
             if (criteria == null || id != request.Id) throw new ArgumentException("IDs diferentes!");
             criteria.Description = request.Description;
             criteria.Name = request.Name;

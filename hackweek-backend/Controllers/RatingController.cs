@@ -1,5 +1,6 @@
 ﻿using hackweek_backend.DTOs;
 using hackweek_backend.Services;
+using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,8 +10,8 @@ namespace hackweek_backend.Controllers
     [ApiController]
     public class RatingController : ControllerBase
     {
-        private readonly RatingService _service;
-        public RatingController(RatingService Service)
+        private readonly IRatingService _service;
+        public RatingController(IRatingService Service)
         {
             _service = Service;
         }

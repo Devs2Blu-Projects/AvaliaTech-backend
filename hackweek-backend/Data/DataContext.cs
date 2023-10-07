@@ -16,9 +16,9 @@ namespace hackweek_backend.Data
         public DbSet<RatingModel> Ratings { get; set; }
         public DbSet<UserModel> Users { get; set; }
 
-        protected override void OnModelCreating (ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating (modelBuilder);
+            base.OnModelCreating(modelBuilder);
 
             // modelBuilder.Entity<GroupModel>()
             //     .Property(g => g.FinalGrade)
@@ -33,9 +33,9 @@ namespace hackweek_backend.Data
 
             modelBuilder.Entity<GroupModel>()
                 .HasOne(g => g.Proposition)
-                .WithOne()
-                .HasForeignKey<GroupModel>(g => g.PropositionId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany()
+                .HasForeignKey(g => g.PropositionId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             // modelBuilder.Entity<GroupRatingModel>()
             //     .Property(gr => gr.Grade)
@@ -80,15 +80,15 @@ namespace hackweek_backend.Data
 
             modelBuilder.Entity<RatingModel>()
                 .HasOne(r => r.User)
-                .WithOne()
-                .HasForeignKey<RatingModel>(r => r.UserId)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RatingModel>()
                 .HasOne(r => r.Group)
-                .WithOne()
-                .HasForeignKey<RatingModel>(r => r.GroupId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany()
+                .HasForeignKey(r => r.GroupId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserModel>()
                 .HasIndex(u => u.Username)
