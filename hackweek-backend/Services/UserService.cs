@@ -1,4 +1,3 @@
-using Azure.Core;
 using hackweek_backend.Data;
 using hackweek_backend.DTOs;
 using hackweek_backend.Models;
@@ -53,13 +52,17 @@ namespace hackweek_backend.Services
             };
 
             await _context.Users.AddAsync(model);
+            if (request.Role == UserRoles.Group) await _context.Groups.AddAsync(new GroupModel
+            {
+                UserId = model.Id,
+                Position = _context.Groups.Max(g => g.Position) + 1,
+            });
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) throw new Exception("Usuário não encontrado!");
+            var user = await _context.Users.FindAsync(id) ?? throw new Exception("Usuário não encontrado!");
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
@@ -67,9 +70,9 @@ namespace hackweek_backend.Services
 
         public async Task UpdateUser(int id, UserDtoUpdate request)
         {
-            if (request.Id != id) throw new Exception("Id diferente do usuário informado!");
+            if (request.Id != id) throw new Exception($"Id diferente do usuário informado! ({id} - {request.Id})");
 
-            var user = await _context.Users.FindAsync(id) ?? throw new Exception($"Usuário não encontrado! ({request.Username})");
+            var user = await _context.Users.FindAsync(id) ?? throw new Exception($"Usuário não encontrado! ({request.Id})");
 
             user.Username = request.Username;
             user.Name = request.Name;

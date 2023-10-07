@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using hackweek_backend.DTOs;
 
@@ -73,7 +72,7 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpGet("/role/{role}")]
+        [HttpGet("role/{role}")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersByRole(string role)
         {
             return Ok(await _service.GetUsersByRole(role));
