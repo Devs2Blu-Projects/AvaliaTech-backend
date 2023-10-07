@@ -1,8 +1,8 @@
+global using Microsoft.EntityFrameworkCore;
 using hackweek_backend.Data;
-using hackweek_backend.Services;
-using hackweek_backend.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using hackweek_backend.Services.Interfaces;
+using hackweek_backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +18,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICriterionService, CriterionService>();
 builder.Services.AddScoped<IPropositionService, PropositionService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
