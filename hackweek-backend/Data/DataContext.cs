@@ -16,9 +16,9 @@ namespace hackweek_backend.Data
         public DbSet<RatingModel> Ratings { get; set; }
         public DbSet<UserModel> Users { get; set; }
 
-        protected override void OnModelCreating (ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating (modelBuilder);
+            base.OnModelCreating(modelBuilder);
 
             // modelBuilder.Entity<GroupModel>()
             //     .Property(g => g.FinalGrade)
@@ -80,8 +80,8 @@ namespace hackweek_backend.Data
 
             modelBuilder.Entity<RatingModel>()
                 .HasOne(r => r.User)
-                .WithOne()
-                .HasForeignKey<RatingModel>(r => r.UserId)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RatingModel>()
