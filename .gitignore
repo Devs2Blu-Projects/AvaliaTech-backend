@@ -399,4 +399,5 @@ FodyWeavers.xsd
 
 # Envs
 appsettings.json
-/hackweek-backend/Services/Interfaces/IUserService.cs
+
+/.gitignore

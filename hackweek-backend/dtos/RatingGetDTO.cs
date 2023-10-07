@@ -6,6 +6,6 @@ namespace hackweek_backend.DTOs
     {
         public int Grade { get; set; }
         public GroupModel? Group { get; set; }
-        public UserModel? User { get; set; }
+        public UserModel? User { get; set; }    
     }
 }
