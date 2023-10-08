@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using hackweek_backend.DTOs;
 using Microsoft.AspNetCore.Authorization;
@@ -79,7 +78,7 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpGet("/role/{role}")]
+        [HttpGet("role/{role}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersByRole(string role)
         {
