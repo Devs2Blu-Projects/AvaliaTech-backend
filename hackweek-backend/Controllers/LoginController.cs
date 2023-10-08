@@ -17,8 +17,8 @@ namespace hackweek_backend.Controllers
             _loginService = loginService;
         }
 
-        [AllowAnonymous]
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
             try

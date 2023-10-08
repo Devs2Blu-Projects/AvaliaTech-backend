@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using hackweek_backend.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace hackweek_backend.Controllers
 {
@@ -17,12 +18,14 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
             return Ok(await _service.GetUsers());
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<UserDto?>> GetUserById(int id)
         {
             var user = await _service.GetUserById(id);
@@ -32,6 +35,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> CreateUser(UserDtoInsert request)
         {
             try
@@ -46,6 +50,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> DeleteUser(int id)
         {
             try
@@ -60,6 +65,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> UpdateUser(int id, UserDtoUpdate request)
         {
             try
@@ -74,6 +80,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("/role/{role}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersByRole(string role)
         {
             return Ok(await _service.GetUsersByRole(role));
