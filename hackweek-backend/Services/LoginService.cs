@@ -34,6 +34,22 @@ namespace hackweek_backend.Services
             return token;
         }
 
+        public UserDto? GetCurrentUser(HttpContext _httpContext)
+        {
+            var claimsIdentity = _httpContext.User.Identity as ClaimsIdentity;
+
+            if (claimsIdentity == null)
+                return null;
+
+            return new UserDto
+            {
+                Id = int.Parse(claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value!),
+                Username = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value!,
+                Name = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value!,
+                Role = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value!
+            };
+        }
+
         private string GenerateToken(UserModel user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
@@ -41,8 +57,9 @@ namespace hackweek_backend.Services
 
             var claims= new []
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Username),
-                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.GivenName, user.Name),
                 new Claim(ClaimTypes.Role, user.Role),
             };
 
