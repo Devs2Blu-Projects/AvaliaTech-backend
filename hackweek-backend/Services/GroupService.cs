@@ -1,5 +1,6 @@
 using hackweek_backend.Data;
 using hackweek_backend.dtos;
+using hackweek_backend.DTOs;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using System.Data;
@@ -12,14 +13,18 @@ namespace hackweek_backend.Services
 
         public GroupService(DataContext context) { _context = context; }
 
-        public async Task<IEnumerable<GroupModel>> GetGroups()
+        public async Task<IEnumerable<GroupDto>> GetGroups()
         {
-            return await _context.Groups.ToListAsync();
+            return await _context.Groups.Select(g => new GroupDto(g)).ToListAsync();
         }
         
-        public async Task<GroupModel?> GetGroupById(int id)
+        public async Task<GroupDto?> GetGroupById(int id)
         {
-            return await _context.Groups.FindAsync(id);
+            var group = await _context.Groups.FindAsync(id);
+
+            if (group == null) return null;
+
+            return new GroupDto(group);
         }
 
         public async Task UpdateGroup(int id, GroupDtoUpdate request)
@@ -36,30 +41,34 @@ namespace hackweek_backend.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<GroupModel?> GetGroupByUser(int idUser)
+        public async Task<GroupDto?> GetGroupByUser(int idUser)
         {
-            return await _context.Groups.FirstOrDefaultAsync(g => g.UserId == idUser);
+            var group = await _context.Groups.FirstOrDefaultAsync(g => g.UserId == idUser);
+
+            if (group == null) return null;
+
+            return new GroupDto(group);
         }
 
-        public async Task<IEnumerable<GroupModel>> GetGroupsByProposition(int idProposition)
+        public async Task<IEnumerable<GroupDto>> GetGroupsByProposition(int idProposition)
         {
-            return await _context.Groups.Where(g => g.PropositionId == idProposition).ToListAsync();
+            return await _context.Groups.Where(g => g.PropositionId == idProposition).Select(g => new GroupDto(g)).ToListAsync();
         }
 
-        public async Task<IEnumerable<GroupModel>> GetGroupsOnQueue()
+        public async Task<IEnumerable<GroupDto>> GetGroupsOnQueue()
         {
-            return await _context.Groups.Where(g => g.EndTime == null).ToListAsync();
+            return await _context.Groups.Where(g => g.EndTime == null).Select(g => new GroupDto(g)).ToListAsync();
         }
 
-        public async Task<IEnumerable<GroupModel>> GetGroupsToRate(int idUser)
+        public async Task<IEnumerable<GroupDto>> GetGroupsToRate(int idUser)
         {
             var ratedGroupIdList = await _context.Ratings.Where(r => r.UserId == idUser).Select(r => r.GroupId).ToListAsync();
-            return await _context.Groups.Where(g => (g.StartTime != null) && (!ratedGroupIdList.Contains(g.Id))).ToListAsync();
+            return await _context.Groups.Where(g => (g.StartTime != null) && (!ratedGroupIdList.Contains(g.Id))).Select(g => new GroupDto(g)).ToListAsync();
         }
 
-        public async Task<IEnumerable<GroupModel>> GetGroupsDone()
+        public async Task<IEnumerable<GroupDto>> GetGroupsDone()
         {
-            return await _context.Groups.Where(g => g.EndTime != null).ToListAsync();
+            return await _context.Groups.Where(g => g.EndTime != null).Select(g => new GroupDto(g)).ToListAsync();
         }
     }
 }

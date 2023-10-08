@@ -40,7 +40,7 @@ namespace hackweek_backend.Services
 
         async public Task<CriterionModel?> GetCriterionById(int id)
         {
-            return _context.Criteria.FirstOrDefault(c => c.Id == id);
+            return await _context.Criteria.FirstOrDefaultAsync(c => c.Id == id);
         }
 
         async public Task UpdateCriterion(int id, CriterionModel request)
