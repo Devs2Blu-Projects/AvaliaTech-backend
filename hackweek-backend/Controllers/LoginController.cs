@@ -8,11 +8,11 @@ namespace hackweek_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class LoginController : ControllerBase
     {
         private readonly ILoginService _loginService;
 
-        public AuthController(ILoginService loginService)
+        public LoginController(ILoginService loginService)
         {
             _loginService = loginService;
         }
