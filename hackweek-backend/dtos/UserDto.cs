@@ -11,12 +11,15 @@ namespace hackweek_backend.DTOs
 
         public UserDto() { }
 
-        public UserDto(UserModel user)
+        public UserDto(UserModel? user)
         {
-            this.Id = user.Id;
-            this.Username = user.Username;
-            this.Name = user.Name;
-            this.Role = user.Role;
+            if (user != null)
+            {
+                this.Id = user.Id;
+                this.Username = user.Username;
+                this.Name = user.Name;
+                this.Role = user.Role;
+            }
         }
     }
 }
