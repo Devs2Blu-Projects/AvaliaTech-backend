@@ -22,6 +22,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICriterionService, CriterionService>();
 builder.Services.AddScoped<IPropositionService, PropositionService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 
 var app = builder.Build();
 

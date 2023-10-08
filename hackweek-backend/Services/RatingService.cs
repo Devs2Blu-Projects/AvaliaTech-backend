@@ -57,8 +57,8 @@ namespace hackweek_backend.Services
             RatingGetDTO result = new RatingGetDTO
             {
                 Grade = grade,
-                User = rating.User,
-                Group = rating.Group,
+                User = new UserDto(rating.User),
+                Group = new GroupDto(rating.Group),
             };
 
             return result;
@@ -146,8 +146,8 @@ namespace hackweek_backend.Services
                 if (grade <= 0) i++;
                 RatingGetDTO j = new RatingGetDTO()
                 {
-                    User = ratings[i].User,
-                    Group = ratings[i].Group,
+                    User = new UserDto(ratings[i].User),
+                    Group = new GroupDto(ratings[i].Group),
                     Grade = grade
                 };
 
@@ -171,8 +171,8 @@ namespace hackweek_backend.Services
                 RatingGetDTO j = new RatingGetDTO 
                 {
                     Grade = grade,
-                    User = r.User,
-                    Group = r.Group,
+                    User = new UserDto(r.User),
+                    Group = new GroupDto(r.Group),
                 };
 
                 retorno.Add(j);
