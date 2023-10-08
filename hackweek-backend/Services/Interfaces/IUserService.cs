@@ -11,6 +11,7 @@ namespace hackweek_backend.Services.Interfaces
         Task DeleteUser(int id);
         Task UpdateUser(int id, UserDtoUpdate request);
 
+        Task<string> RedefinePassword(int id);
         Task<IEnumerable<UserDto>> GetUsersByRole(string role);
     }
 }
