@@ -5,7 +5,11 @@ namespace hackweek_backend.Data
 {
     public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        private readonly IConfiguration _config;
+        public DataContext(DbContextOptions<DataContext> options, IConfiguration config) : base(options)
+        {
+            _config = config;
+        }
 
         public DbSet<CriterionModel> Criteria { get; set; }
         public DbSet<GroupModel> Groups { get; set; }
@@ -93,6 +97,16 @@ namespace hackweek_backend.Data
             modelBuilder.Entity<UserModel>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
+
+            modelBuilder.Entity<UserModel>().HasData(
+                new UserModel 
+                { 
+                    Id = 1, 
+                    Name = "Admin",
+                    Username = _config["Seed:Admin:Username"]!,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(_config["Seed:Admin:Password"]!),
+                    Role = UserRoles.Admin 
+                });
         }
     }
 }
