@@ -53,7 +53,15 @@ namespace hackweek_backend.Controllers
             try
             {
                 await _service.CreateProposition(request);
-                return CreatedAtAction(nameof(GetPropositionById), new { id = request.Id }, request);
+                return Ok("Proposição criada com sucesso.");
+            }
+            catch (ArgumentNullException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
             }
             catch (Exception e)
             {
@@ -74,14 +82,13 @@ namespace hackweek_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
-
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProposition(int id, PropositionDTO request)
         {
             try
             {
                 await _service.UpdateProposition(id, request);
-                return NoContent();
+                return Ok("Desafio atualizado com sucesso.");
             }
             catch (Exception e)
             {
