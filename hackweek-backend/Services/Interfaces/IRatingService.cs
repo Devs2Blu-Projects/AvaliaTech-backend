@@ -1,4 +1,5 @@
 using Azure.Core;
+using hackweek_backend.dtos;
 using hackweek_backend.DTOs;
 using hackweek_backend.Models;
 
@@ -18,5 +19,6 @@ namespace hackweek_backend.Services.Interfaces
 
         //Task<IEnumerable<RatingModel>> GetRatingsByUser(int idUser);
         Task<List<RatingGetDTO>> GetAllRatingsByGroup(int idGroup);
+        Task CreateGrade(GradeDTO grade);
     }
 }

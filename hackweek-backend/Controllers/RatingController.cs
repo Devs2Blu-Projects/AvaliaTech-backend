@@ -1,4 +1,6 @@
-﻿using hackweek_backend.DTOs;
+﻿using hackweek_backend.dtos;
+using hackweek_backend.DTOs;
+using hackweek_backend.Models;
 using hackweek_backend.Services;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -79,6 +81,20 @@ namespace hackweek_backend.Controllers
             {
                 var result = await _service.GetAllRatingsByGroup(id);
                 return Ok(result);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpPost("grade")]
+        public async Task<IActionResult> PostGrade(GradeDTO grade)
+        {
+            try
+            {
+                await _service.CreateGrade(grade);
+                return NoContent();
             }
             catch(Exception e)
             {

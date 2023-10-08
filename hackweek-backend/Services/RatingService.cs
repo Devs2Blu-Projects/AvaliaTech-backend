@@ -1,4 +1,5 @@
 ﻿using hackweek_backend.Data;
+using hackweek_backend.dtos;
 using hackweek_backend.DTOs;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
@@ -184,6 +185,18 @@ namespace hackweek_backend.Services
         }
 
 
+        //Cadastrando X nota de X criterio de X grupo por X avaliador
+        async public Task CreateGrade(GradeDTO grade)
+        {
+            RatingCriterionModel Grade = new RatingCriterionModel();
+            Grade.Grade = grade.Grade;
+            Grade.Criterion = grade.Criterion;
+            Grade.Rating = grade.Rating;
+            Grade.RatingId = grade.Rating.Id;
+            Grade.CriterionId = grade.Criterion.Id;
+            _context.RatingCriteria.Add(Grade);
+            await _context.SaveChangesAsync();
+        }
 
         async public Task UpdateRating(int id, RatingModel request)
         {
