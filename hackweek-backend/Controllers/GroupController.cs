@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using hackweek_backend.Services.Interfaces;
 using hackweek_backend.dtos;
 using hackweek_backend.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using hackweek_backend.Models;
 
 namespace hackweek_backend.Controllers
 {
@@ -17,12 +19,14 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroups()
         {
             return Ok(await _service.GetGroups());
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<GroupDto?>> GetGroupById(int id)
         {
             var group = await _service.GetGroupById(id);
@@ -32,6 +36,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Group}")]
         public async Task<ActionResult> UpdateGroup(int id, GroupDtoUpdate request)
         {
             try
@@ -46,6 +51,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("user/{idUser}")]
+        [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Group}")]
         public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupByUser(int idUser)
         {
             var group = await _service.GetGroupByUser(idUser);
@@ -55,24 +61,28 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("proposition/{idProposition}")]
-        public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsByProposition(int idProposition)
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsByProposition(int idProposition) // TODO
         {
             return Ok(await _service.GetGroupsByProposition(idProposition));
         }
 
         [HttpGet("queue")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsOnQueue()
         {
             return Ok(await _service.GetGroupsOnQueue());
         }
 
         [HttpGet("rate/{idUser}")]
+        [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.User}")]
         public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsToRate(int idUser)
         {
             return Ok(await _service.GetGroupsToRate(idUser));
         }
 
         [HttpGet("done")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsDone()
         {
             return Ok(await _service.GetGroupsDone());

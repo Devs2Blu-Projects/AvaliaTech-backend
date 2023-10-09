@@ -1,6 +1,8 @@
 ﻿using hackweek_backend.DTOs;
+using hackweek_backend.Models;
 using hackweek_backend.Services;
 using hackweek_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +19,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.User}")]
         public async Task<IActionResult> CreateRating(RatingDTO rating)
         {
             try
@@ -31,6 +34,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpDelete("avaliador/{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteRatingByAvaliadorById(int id)
         {
             try
@@ -45,7 +49,8 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("avaliador/{id}")]
-        public async Task<IActionResult> GetRatingByIdByAvaliador(int id)
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> GetRatingByIdByAvaliador(int id) //TODO: Check method name
         {
             try
             {
@@ -59,11 +64,12 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRatingsByAvaliador()
+        [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.User}")]
+        public async Task<IActionResult> GetAllRatingsByAvaliador() 
         {
             try
             {
-                var result = await _service.GetAllRatingsByAvaliador();
+                var result = await _service.GetAllRatingsByAvaliador(); //TODO: check parameter
                 return Ok(result);
             }
             catch (Exception ex)
@@ -73,6 +79,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("group/{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetAllRatingsByGroup(int id)
         {
             try
