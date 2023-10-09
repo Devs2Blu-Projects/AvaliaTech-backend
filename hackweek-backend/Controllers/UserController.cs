@@ -87,6 +87,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("{id}/redefine")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<string>> RedefinePassword(int id)
         {
             try

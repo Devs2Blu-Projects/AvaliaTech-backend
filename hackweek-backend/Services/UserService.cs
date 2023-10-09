@@ -10,7 +10,6 @@ namespace hackweek_backend.Services
     {
         private readonly DataContext _context;
         private readonly string[] _allowCreateRoleList = {
-            UserRoles.Admin,
             UserRoles.Group,
             UserRoles.User,
         };
@@ -52,12 +51,17 @@ namespace hackweek_backend.Services
             };
 
             await _context.Users.AddAsync(model);
-            if (request.Role == UserRoles.Group) await _context.Groups.AddAsync(new GroupModel
-            {
-                UserId = model.Id,
-                Position = _context.Groups.Max(g => g.Position) + 1,
-            });
             await _context.SaveChangesAsync();
+
+            if (request.Role == UserRoles.Group)
+            {
+                await _context.Groups.AddAsync(new GroupModel
+                {
+                    UserId = model.Id,
+                    Position = (await _context.Groups.AnyAsync()) ? await _context.Groups.MaxAsync(g => g.Position) + 1 : 1,
+                });
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteUser(int id)
