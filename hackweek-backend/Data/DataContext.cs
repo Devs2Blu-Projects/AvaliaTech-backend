@@ -20,11 +20,6 @@ namespace hackweek_backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // modelBuilder.Entity<GroupModel>()
-            //     .Property(g => g.FinalGrade)
-            //     .HasDefaultValueSql("")
-            //     .ValueGeneratedOnAddOrUpdate();
-
             modelBuilder.Entity<GroupModel>()
                 .HasOne(g => g.User)
                 .WithOne()
@@ -36,11 +31,6 @@ namespace hackweek_backend.Data
                 .WithMany()
                 .HasForeignKey(g => g.PropositionId)
                 .OnDelete(DeleteBehavior.SetNull);
-
-            // modelBuilder.Entity<GroupRatingModel>()
-            //     .Property(gr => gr.Grade)
-            //     .HasDefaultValueSql("")
-            //     .ValueGeneratedOnAddOrUpdate();
 
             modelBuilder.Entity<GroupRatingModel>()
                 .HasOne(gr => gr.Group)

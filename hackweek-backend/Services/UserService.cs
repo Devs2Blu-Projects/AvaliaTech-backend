@@ -27,7 +27,7 @@ namespace hackweek_backend.Services
                 .Select(u => new UserDto(u))
                 .ToListAsync();
         }
-        
+
         public async Task<UserDto?> GetUserById(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -66,6 +66,18 @@ namespace hackweek_backend.Services
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<string> RedefinePassword(int id)
+        {
+            var user = await _context.Users.FindAsync(id) ?? throw new Exception($"Usuário não cadastrado! ({id})");
+
+            var password = Guid.NewGuid().ToString().Replace("-","");
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            await _context.SaveChangesAsync();
+
+            return password;
         }
 
         public async Task UpdateUser(int id, UserDtoUpdate request)
