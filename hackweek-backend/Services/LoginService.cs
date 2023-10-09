@@ -34,9 +34,9 @@ namespace hackweek_backend.Services
             return token;
         }
 
-        public UserDto? GetCurrentUser(HttpContext _httpContext)
+        private UserDto? GetCurrentUser(HttpContext httpContext)
         {
-            var claimsIdentity = _httpContext.User.Identity as ClaimsIdentity;
+            var claimsIdentity = httpContext.User.Identity as ClaimsIdentity;
 
             if (claimsIdentity == null)
                 return null;
@@ -48,6 +48,14 @@ namespace hackweek_backend.Services
                 Name = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value!,
                 Role = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value!
             };
+        }
+
+        public bool HasAccessToUser(HttpContext httpContext, int idUser)
+        {
+            var user = GetCurrentUser(httpContext);
+            if (user == null) return false;
+
+            return (user.Role == UserRoles.Admin) || (user.Id == idUser);
         }
 
         private string GenerateToken(UserModel user)
