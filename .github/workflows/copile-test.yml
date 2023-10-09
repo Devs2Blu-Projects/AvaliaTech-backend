@@ -2,8 +2,7 @@ name: build
 
 on:
   pull_request:
-    branches: [ main, dev ]
-    types: [ synchronize ]
+    types: [ opened, reopened, synchronize ]
     paths:
     - '**.cs'
     - '**.csproj'
