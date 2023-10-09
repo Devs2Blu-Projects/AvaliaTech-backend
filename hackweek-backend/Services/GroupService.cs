@@ -34,9 +34,10 @@ namespace hackweek_backend.Services
             var group = await _context.Groups.FindAsync(id) ?? throw new Exception($"Grupo não encontrado! ({request.Id})");
 
             group.Team = request.Team;
-            group.ProjectDescription = request.ProjectDescription;
             group.Language = request.Language;
             group.PropositionId = request.PropositionId;
+            group.ProjectName = request.ProjectName;
+            group.ProjectDescription = request.ProjectDescription;
 
             await _context.SaveChangesAsync();
         }

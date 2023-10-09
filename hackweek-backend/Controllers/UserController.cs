@@ -77,5 +77,18 @@ namespace hackweek_backend.Controllers
         {
             return Ok(await _service.GetUsersByRole(role));
         }
+
+        [HttpGet("{id}/redefine")]
+        public async Task<ActionResult<string>> RedefinePassword(int id)
+        {
+            try
+            {
+                return Ok(await _service.RedefinePassword(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
