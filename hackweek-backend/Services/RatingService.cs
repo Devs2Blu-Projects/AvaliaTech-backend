@@ -188,6 +188,7 @@ namespace hackweek_backend.Services
         //Cadastrando X nota de X criterio de X grupo por X avaliador
         async public Task CreateGrade(GradeDTO grade)
         {
+            if (grade.Grade < 0) throw new Exception("Notas tem que ser positivas!");
             RatingCriterionModel Grade = new RatingCriterionModel();
             Grade.Grade = grade.Grade;
             Grade.Criterion = grade.Criterion;
