@@ -10,15 +10,16 @@ namespace hackweek_backend.DTOs
         public string Language { get; set; } = string.Empty;
         public int? PropositionId { get; set; }
         public PropositionModel? Proposition { get; set; }
-        public string ProjectName { get; set; }
+        public string ProjectName { get; set; } = string.Empty;
         public string ProjectDescription { get; set; } = string.Empty;
         public uint FinalGrade { get; set; }
         public uint Position { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public int UserId { get; set; }
-        public UserDto? User { get; set; }
         public List<GroupRatingDto>? GroupRatings { get; set; }
+
+        public GroupDto() { }
 
         public GroupDto(GroupModel? group)
         {
@@ -36,8 +37,7 @@ namespace hackweek_backend.DTOs
                 StartTime = group.StartTime;
                 EndTime = group.EndTime;
                 UserId = group.UserId;
-                User = new UserDto(group.User);
-                GroupRatings = (group.GroupRatings == null) ? null : group.GroupRatings.Select(gr => new GroupRatingDto(gr)).ToList();
+                GroupRatings = group.GroupRatings?.Select(gr => new GroupRatingDto(gr)).ToList();
             }
         }
     }

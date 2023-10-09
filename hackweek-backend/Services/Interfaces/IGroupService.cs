@@ -11,7 +11,7 @@ namespace hackweek_backend.Services.Interfaces
         Task UpdateGroup(int id, GroupDtoUpdate request);
 
         Task<GroupDto?> GetGroupByUser(int idUser);
-        Task<IEnumerable<GroupDto>> GetGroupsByProposition(int idProposition);
+        Task<IEnumerable<GroupDto>> GetGroupsRanking();
         Task<IEnumerable<GroupDto>> GetGroupsOnQueue();
         Task<IEnumerable<GroupDto>> GetGroupsToRate(int idUser);
         Task<IEnumerable<GroupDto>> GetGroupsDone();
