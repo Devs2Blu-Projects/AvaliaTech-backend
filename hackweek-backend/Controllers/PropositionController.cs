@@ -1,5 +1,7 @@
 ﻿using hackweek_backend.DTOs;
+using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hackweek_backend.Controllers
@@ -16,6 +18,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Group}")]
         public async Task<IActionResult> GetPropositions()
         {
             try
@@ -30,6 +33,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetPropositionById(int id)
         {
             try
@@ -48,6 +52,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> CreateProposition(PropositionDTO request)
         {
             try
@@ -70,6 +75,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteProposition(int id)
         {
             try
@@ -83,6 +89,7 @@ namespace hackweek_backend.Controllers
             }
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateProposition(int id, PropositionDTO request)
         {
             try

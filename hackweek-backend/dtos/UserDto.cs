@@ -9,6 +9,8 @@ namespace hackweek_backend.DTOs
         public string Name { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
 
+        public UserDto() { }
+
         public UserDto(UserModel? user)
         {
             if (user != null)

@@ -2,6 +2,7 @@
 using hackweek_backend.Models;
 using hackweek_backend.Services;
 using hackweek_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -19,6 +20,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> CreateCriterion(CriterionModel request)
         {
             try
@@ -33,6 +35,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("{Id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetCriterionById(int Id)
         {
             try
@@ -47,6 +50,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteCriterion(int Id)
         {
             try
@@ -61,6 +65,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetCriteria()
         {
             try
@@ -75,6 +80,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("proposition/{IdProposition}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetCriteriaByProposition(int IdProposition)
         {
             try
@@ -89,6 +95,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPut("Id")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateCriterion(int Id, CriterionModel request)
         {
             try
