@@ -133,15 +133,13 @@ namespace hackweek_backend.Services
 
         public Dictionary<int, double> CalculateCriterionGradeByGroup(int idGrupo)
         {
-            var group = _context.Groups.FirstOrDefault(g => g.Id == idGrupo);
-           
-            List<RatingModel> ratingsByGroup = _context.Ratings.Where(r => r.GroupId == group.Id).ToList();
+            List<RatingModel> ratingsByGroup = _context.Ratings.Where(r => r.GroupId == idGrupo).ToList();
 
             Dictionary<int, double> lista = new Dictionary<int, double>();
 
             foreach (var i in ratingsByGroup)
             {
-                var y = _context.RatingCriteria.Include(rc => rc.Rating).FirstOrDefault(rc => rc.Rating == i);
+                var y = _context.RatingCriteria.FirstOrDefault(rc => rc.RatingId == i.Id);
                 if (lista[y.CriterionId] != null)  lista[y.CriterionId] += y.Grade;
                 else lista[y.CriterionId] = y.Grade;
             }
@@ -149,8 +147,6 @@ namespace hackweek_backend.Services
             return lista;
         }
 
-        // Retorna TODAS as avaliações com: User, Group e notaFinal do avaliador
-        // Quero uma lista com cada grupo e cada notaFinal
         async public Task<List<RatingGetDTO>> GetAllRatings()
         {
             var ratings = await _context.Ratings.Select(r => new
@@ -201,11 +197,8 @@ namespace hackweek_backend.Services
                 retorno.Add(j);
             }
             return retorno;
-
         }
 
-
-        //Cadastrando X nota de X criterio de X grupo por X avaliador
         async public Task CreateGrade(GradeDTO grade)
         {
             if (grade.Grade < 0) throw new Exception("Notas tem que ser positivas!");
@@ -218,8 +211,6 @@ namespace hackweek_backend.Services
             _context.RatingCriteria.Add(Grade);
             await _context.SaveChangesAsync();
         }
-
-
 
         //Raphael
         async public Task StartRating(int idGroup)
