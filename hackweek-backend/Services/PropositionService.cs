@@ -18,7 +18,7 @@ namespace hackweek_backend.Services
         {
             try
             {
-                var propositions = await _context.Propositions.ToListAsync();
+                var propositions = await _context.Propositions.Include(p => p.PropositionCriteria).ToListAsync();
                 return propositions;
             }
             catch (Exception e)
@@ -31,7 +31,7 @@ namespace hackweek_backend.Services
         {
             try
             {
-                var proposition = await _context.Propositions.FindAsync(id);
+                var proposition = await _context.Propositions.Include(p => p.PropositionCriteria).FirstOrDefaultAsync(p => p.Id == id);
                 return proposition;
             }
             catch (Exception e)
