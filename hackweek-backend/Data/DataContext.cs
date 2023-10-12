@@ -12,6 +12,8 @@ namespace hackweek_backend.Data
         }
 
         public DbSet<CriterionModel> Criteria { get; set; }
+        public DbSet<EventModel> Events { get; set; }
+        public DbSet<GlobalModel> Global { get; set; }
         public DbSet<GroupModel> Groups { get; set; }
         public DbSet<GroupRatingModel> GroupRatings { get; set; }
         public DbSet<PropositionCriterionModel> PropositionsCriteria { get; set; }
@@ -89,13 +91,29 @@ namespace hackweek_backend.Data
                 .IsUnique();
 
             modelBuilder.Entity<UserModel>().HasData(
-                new UserModel 
-                { 
-                    Id = 1, 
+                new UserModel
+                {
+                    Id = 1,
                     Name = "Admin",
-                    Username = _config["Seed:Admin:Username"]!,
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(_config["Seed:Admin:Password"]!),
-                    Role = UserRoles.Admin 
+                    Username = _config["Seed:Admin:Username"] ?? "admin",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(_config["Seed:Admin:Password"] ?? "13579"),
+                    Role = UserRoles.Admin
+                });
+
+            modelBuilder.Entity<EventModel>().HasData(
+                new EventModel
+                {
+                    Id = 1,
+                    Name = _config["Seed:Event:Name"] ?? string.Empty,
+                    StartDate = (DateTime.TryParse(_config["Seed:Event:StartDate"], out DateTime eventStart) ? eventStart : null),
+                    EndDate = (DateTime.TryParse(_config["Seed:Event:EndDate"], out DateTime eventEnd) ? eventEnd : null),
+                });
+
+            modelBuilder.Entity<GlobalModel>().HasData(
+                new GlobalModel
+                {
+                    Id = 1,
+                    CurrentEventId = 1
                 });
         }
     }
