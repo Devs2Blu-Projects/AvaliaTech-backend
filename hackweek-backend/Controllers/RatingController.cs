@@ -94,20 +94,6 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpPost("grade")]
-        public async Task<IActionResult> PostGrade(GradeDTO grade)
-        {
-            try
-            {
-                await _service.CreateGrade(grade);
-                return NoContent();
-            }
-            catch(Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-
         [HttpPatch("group/{id}/start")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> StartRating(int id)
