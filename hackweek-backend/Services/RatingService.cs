@@ -131,25 +131,46 @@ namespace hackweek_backend.Services
         {
             var group = _context.Groups.FirstOrDefault(g => g.Id == idGrupo);
             group.FinalGrade = CalculateFinalGradeByGroup(idGrupo);
-            CalculateCriterionGradeByGroup(idGrupo);
+            CalculateCriterionGradeByGroup(group);
 
+            _context.SaveChanges();
 
         }
 
-        public Dictionary<int, double> CalculateCriterionGradeByGroup(int idGrupo)
+        public void CalculateCriterionGradeByGroup(GroupModel group)
         {
-            List<RatingModel> ratingsByGroup = _context.Ratings.Where(r => r.GroupId == idGrupo).ToList();
+            List<RatingModel> ratingsByGroup = _context.Ratings.Where(r => r.GroupId == group.Id).ToList();
+            var propCriterion = _context.PropositionsCriteria.Where(pc => pc.PropositionId == group.PropositionId).ToList();
+            _context.GroupRatings.Where(g => g.GroupId == group.Id).ExecuteDelete();
 
             Dictionary<int, double> lista = new Dictionary<int, double>();
 
+            //Avaliacao
             foreach (var i in ratingsByGroup)
             {
-                var y = _context.RatingCriteria.FirstOrDefault(rc => rc.RatingId == i.Id);
-                if (lista[y.CriterionId] != null)  lista[y.CriterionId] += y.Grade;
-                else lista[y.CriterionId] = y.Grade;
+                var y = _context.RatingCriteria.Where(rc => rc.RatingId == i.Id).ToList();
+                
+                //criteriosa dql avaliacao
+                foreach(var j in y)
+                {
+                    double myGrade = j.Grade / ratingsByGroup.Count();
+                    var criterion = _context.PropositionsCriteria.FirstOrDefault(pc => pc.CriterionId == j.CriterionId);
+                    var gr = _context.GroupRatings.FirstOrDefault(gp => gp.PropositionCriterionId == criterion.Id);
+
+                    if(gr == null)
+                    {
+                        gr = new GroupRatingModel()
+                        {
+                            Grade = myGrade,
+                            PropositionCriterionId = criterion.Id,
+                            GroupId = group.Id
+                        };
+                    }
+                    else  gr.Grade += myGrade;
+                }
             }
 
-            return lista;
+            _context.SaveChanges();
         }
 
         async public Task<List<RatingGetDTO>> GetAllRatings()
@@ -233,7 +254,7 @@ namespace hackweek_backend.Services
             var group = await _context.Groups.FindAsync(idGroup) ?? throw new Exception($"Grupo não encontrado! ({idGroup})");
             var criteria = await _context.PropositionsCriteria.Where(pc => pc.PropositionId == group.PropositionId).ToListAsync();
             
-            CalculateCriterionGradeByGroup(idGroup);
+            CalculateCriterionGradeByGroup(group);
             group.FinalGrade = (uint) CalculateFinalGradeByGroup(idGroup);
             group.EndTime ??= DateTime.Now;
             await _context.SaveChangesAsync();

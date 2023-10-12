@@ -11,9 +11,6 @@ namespace hackweek_backend.Services.Interfaces
         Task<List<RatingGetDTO>> GetRatingsByGroup(int idGroup);
         Task DeleteRating(int id);
         Task<RatingGetDTO> GetRatingById(int id);
-        double CalculateFinalGradeByRating(int id);
-        double CalculateFinalGradeByGroup(int idGrupo);
-        Dictionary<int, double> CalculateCriterionGradeByGroup(int idGrupo);
         Task<List<RatingGetDTO>> GetAllRatings();
         Task StartRating(int idGroup);
         Task EndRating(int idGroup);
