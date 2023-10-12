@@ -30,7 +30,7 @@ namespace hackweek_backend.Controllers
             try
             {
                 await _service.SetCurrentEvent(eventId);
-                return Ok();
+                return Ok("Evento ativo atualizado com sucesso!");
             }
             catch (Exception e)
             {

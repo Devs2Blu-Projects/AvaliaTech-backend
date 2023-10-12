@@ -40,7 +40,7 @@ namespace hackweek_backend.Services
 
             if (_allowCreateRoleList.FirstOrDefault(r => r == request.Role) == null) throw new Exception($"Cargo inválido! ({request.Role})");
 
-            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+            var eventId = (await _globalService.GetGlobal()).CurrentEventId ?? throw new Exception($"Evento atual não selecionado!");
 
             var userModel = new UserModel
             {
@@ -48,22 +48,22 @@ namespace hackweek_backend.Services
                 Name = request.Name,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Role = request.Role,
-                EventId = currentEvent.Id,
+                EventId = eventId,
             };
 
             await _context.Users.AddAsync(userModel);
             await _context.SaveChangesAsync();
 
-            if (request.Role == UserRoles.Group) await InternalCreateGroup(userModel.Id, currentEvent.Id);
+            if (request.Role == UserRoles.Group) await InternalCreateGroup(userModel.Id, eventId);
         }
 
-        private async Task InternalCreateGroup(int userId, int currentEventId)
+        private async Task InternalCreateGroup(int userId, int eventId)
         {
             await _context.Groups.AddAsync(new GroupModel
             {
                 UserId = userId,
                 Position = (await _context.Groups.AnyAsync()) ? await _context.Groups.MaxAsync(g => g.Position) + 1 : 1,
-                EventId = currentEventId,
+                EventId = eventId,
             });
             await _context.SaveChangesAsync();
         }

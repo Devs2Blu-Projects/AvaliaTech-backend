@@ -63,11 +63,18 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupDto>> GetGroupsRanking()
         {
-            var global = await _globalService.GetGlobal();
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+
+            if (!currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
+
+            var propositionIds = await _context.Propositions
+                .Where(p => p.EventId == currentEvent.Id)
+                .Select(p => p.Id).ToListAsync();
 
             return await _context.Groups
-                .OrderByDescending(g => g.FinalGrade)
+                .Where(g => propositionIds.Contains(g.PropositionId ?? -1))
                 .Include(g => g.Proposition).Include(g => g.GroupRatings)
+                .OrderByDescending(g => g.FinalGrade)
                 .Select(g => new GroupDto(g)).ToListAsync();
         }
 
