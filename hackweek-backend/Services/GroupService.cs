@@ -9,8 +9,13 @@ namespace hackweek_backend.Services
     public class GroupService : IGroupService
     {
         private readonly DataContext _context;
+        private readonly IGlobalService _globalService;
 
-        public GroupService(DataContext context) { _context = context; }
+        public GroupService(DataContext context, IGlobalService globalService)
+        {
+            _context = context;
+            _globalService = globalService;
+        }
 
         public async Task<IEnumerable<GroupDto>> GetGroups()
         {
@@ -58,6 +63,8 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupDto>> GetGroupsRanking()
         {
+            var global = await _globalService.GetGlobal();
+
             return await _context.Groups
                 .OrderByDescending(g => g.FinalGrade)
                 .Include(g => g.Proposition).Include(g => g.GroupRatings)

@@ -17,13 +17,6 @@ namespace hackweek_backend.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
-        {
-            return Ok(await _service.GetUsers());
-        }
-
         [HttpGet("{id}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<UserDto?>> GetUserById(int id)
@@ -81,9 +74,9 @@ namespace hackweek_backend.Controllers
 
         [HttpGet("role/{role}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersByRole(string role)
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersEventByRole(string role)
         {
-            return Ok(await _service.GetUsersByRole(role));
+            return Ok(await _service.GetUsersEventByRole(role));
         }
 
         [HttpGet("{id}/redefine")]
