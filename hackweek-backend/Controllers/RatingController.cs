@@ -40,7 +40,7 @@ namespace hackweek_backend.Controllers
         {
             try
             {
-                await _service.DeleteRatingByAvaliadorById(id);
+                await _service.DeleteRating(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -51,11 +51,11 @@ namespace hackweek_backend.Controllers
 
         [HttpGet("avaliador/{id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetRatingByIdByAvaliador(int id) //TODO: Check method name
+        public async Task<IActionResult> GetRatingById(int id) //TODO: Check method name
         {
             try
             {
-                var result = await _service.GetRatingByIdByAvaliador(id);
+                var result = await _service.GetRatingById(id);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -70,7 +70,7 @@ namespace hackweek_backend.Controllers
         {
             try
             {
-                var result = await _service.GetAllRatingsByAvaliador(); //TODO: check parameter
+                var result = await _service.GetAllRatings(); //TODO: check parameter
                 return Ok(result);
             }
             catch (Exception ex)
@@ -85,7 +85,7 @@ namespace hackweek_backend.Controllers
         {
             try
             {
-                var result = await _service.GetAllRatingsByGroup(id);
+                var result = await _service.GetRatingsByGroup(id);
                 return Ok(result);
             }
             catch(Exception e)
@@ -94,15 +94,31 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpPost("grade")]
-        public async Task<IActionResult> PostGrade(GradeDTO grade)
+        [HttpPatch("group/{id}/start")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> StartRating(int id)
         {
             try
             {
-                await _service.CreateGrade(grade);
-                return NoContent();
+                await _service.StartRating(id);
+                return Ok();
             }
-            catch(Exception e)
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpPatch("group/{id}/end")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> EndRating(int id)
+        {
+            try
+            {
+                await _service.EndRating(id);
+                return Ok();
+            }
+            catch (Exception e)
             {
                 return BadRequest(e);
             }

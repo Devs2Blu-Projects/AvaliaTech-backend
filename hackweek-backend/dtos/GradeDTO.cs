@@ -4,7 +4,7 @@ namespace hackweek_backend.dtos
 {
     public class GradeDTO
     {
-        public int Grade { get; set; }
+        public double Grade { get; set; }
         public RatingModel? Rating { get; set; }
         public CriterionModel? Criterion { get; set; }
     }

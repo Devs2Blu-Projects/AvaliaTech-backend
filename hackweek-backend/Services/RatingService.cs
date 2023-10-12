@@ -4,8 +4,6 @@ using hackweek_backend.DTOs;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace hackweek_backend.Services
 {
@@ -14,21 +12,32 @@ namespace hackweek_backend.Services
         private readonly DataContext _context;
         public RatingService(DataContext context) { _context = context; }
 
-
-        //criando a avaliação
         async public Task CreateRating(RatingDTO rating)
         {
             RatingModel model = new RatingModel();
             model.UserId = rating.UserId;
             model.GroupId = rating.GroupId;
             _context.Ratings.Add(model);
+
             await _context.SaveChangesAsync();
+
+            foreach (var item in rating.Grades)
+            {
+                RatingCriterionModel rc = new RatingCriterionModel
+                {
+                    Grade = item.Grade,
+                    RatingId = model.Id,
+                    CriterionId = item.CriterionId,
+                };
+                _context.RatingCriteria.Add(rc);
+            }
+
+            await _context.SaveChangesAsync();
+
+            UpdateGroup(model.GroupId);
         }
 
-
-        // Deleta a avaliação da tabela de Rating e todas as N->N da tabela de RatingCriteria
-        // Quero deletar x avaliação (de X grupo e X avaliador)
-        async public Task DeleteRatingByAvaliadorById(int id)
+        async public Task DeleteRating(int id)
         {
            var rating = _context.Ratings.FirstOrDefault(r => r.Id == id);
            var ratingCriterion = await _context.RatingCriteria.Where(r => r.RatingId == id).ToListAsync();
@@ -38,10 +47,7 @@ namespace hackweek_backend.Services
            await _context.SaveChangesAsync();
         }
 
-
-        // Retorna a avaliação inteira (por ID): Avaliador, Grupo e Nota Final do avaliador
-        // Exemplo: Quero pegar avaliação de X grupo do Y avaliador
-        public async Task<RatingGetDTO> GetRatingByIdByAvaliador(int id)
+        public async Task<RatingGetDTO> GetRatingById(int id)
         {
             var rating = await _context.Ratings
                 .Where(r => r.Id == id)
@@ -53,7 +59,7 @@ namespace hackweek_backend.Services
 
             if (rating == null)  return null;
 
-            int grade = CalculateFinalGradeByAvaliador(id);
+            double grade = CalculateFinalGradeByRating(id);
 
             RatingGetDTO result = new RatingGetDTO
             {
@@ -67,7 +73,7 @@ namespace hackweek_backend.Services
 
 
         // Calculo da nota final da avaliacao de X avaliador com X grupo
-        public int CalculateFinalGradeByAvaliador(int id)
+        public double CalculateFinalGradeByRating(int id)
         {
             // Pega a X avaliação
             var rating =  _context.Ratings.FirstOrDefault(r => r.Id ==id);
@@ -76,7 +82,7 @@ namespace hackweek_backend.Services
             var ratingCriterion =  _context.RatingCriteria.Where(r => r.Rating == rating).ToList();
 
             //pega as notas de x avaliação por criterio
-            var grades =  ratingCriterion.Select(r => r.Grade).ToList();
+            List<double> grades =  ratingCriterion.Select(r => r.Grade).ToList();
 
             //pego o peso de cada criterio
             List<uint?> weights = new List<uint?>();
@@ -89,9 +95,7 @@ namespace hackweek_backend.Services
 
             if (weights.Count != grades.Count) throw new InvalidOperationException("ERRO! Peso e notas não tão organizadas!");
 
-            var finalGrade = 0;
-
-
+            double finalGrade = 0;
             // soma ponderada
             for(int i = 0; i< grades.Count; i++)
             {
@@ -99,26 +103,23 @@ namespace hackweek_backend.Services
                 if (weights[i] == null) throw new Exception("ERRO! Peso ou nota abaixo de 0");
                 finalGrade += grades[i] * (int)weights[i];
             }
-
+            rating.FinalGrade = finalGrade;
             return finalGrade;
         }
 
 
         // Retorna a nota final de um grupo
         //!! Formula precisa revisar
-        public int CalculateFinalGradeByGroup(int idGrupo)
+        public double CalculateFinalGradeByGroup(int idGrupo)
         {
             // Pega o grupo e todas as avaliações desse grupo
             var group = _context.Groups.FirstOrDefault(g => g.Id == idGrupo);
             var ratingsGroup = _context.Ratings.Where(r => r.Group == group).ToList();
 
-            int finalGrade = 0;
+            double finalGrade = 0;
 
             // Soma a nota de todas as avaliações desse grupo
-            foreach(var i in ratingsGroup)
-            {
-                finalGrade += CalculateFinalGradeByAvaliador(i.Id);
-            }
+            foreach(var i in ratingsGroup)  finalGrade += CalculateFinalGradeByRating(i.Id);
 
             // Divide a nota final pelo o numero de avaliacoes
             finalGrade = finalGrade / ratingsGroup.Count();
@@ -126,9 +127,53 @@ namespace hackweek_backend.Services
             return finalGrade;
         }
 
-        // Retorna TODAS as avaliações com: User, Group e notaFinal do avaliador
-        // Quero uma lista com cada grupo e cada notaFinal
-        async public Task<List<RatingGetDTO>> GetAllRatingsByAvaliador()
+        public void UpdateGroup(int idGrupo)
+        {
+            var group = _context.Groups.FirstOrDefault(g => g.Id == idGrupo);
+            group.FinalGrade = CalculateFinalGradeByGroup(idGrupo);
+            CalculateCriterionGradeByGroup(group);
+
+            _context.SaveChanges();
+
+        }
+
+        public void CalculateCriterionGradeByGroup(GroupModel group)
+        {
+            List<RatingModel> ratingsByGroup = _context.Ratings.Where(r => r.GroupId == group.Id).ToList();
+            var propCriterion = _context.PropositionsCriteria.Where(pc => pc.PropositionId == group.PropositionId).ToList();
+            _context.GroupRatings.Where(g => g.GroupId == group.Id).ExecuteDelete();
+
+            Dictionary<int, double> lista = new Dictionary<int, double>();
+
+            //Avaliacao
+            foreach (var i in ratingsByGroup)
+            {
+                var y = _context.RatingCriteria.Where(rc => rc.RatingId == i.Id).ToList();
+                
+                //criteriosa dql avaliacao
+                foreach(var j in y)
+                {
+                    double myGrade = j.Grade / ratingsByGroup.Count();
+                    var criterion = _context.PropositionsCriteria.FirstOrDefault(pc => pc.CriterionId == j.CriterionId);
+                    var gr = _context.GroupRatings.FirstOrDefault(gp => gp.PropositionCriterionId == criterion.Id);
+
+                    if(gr == null)
+                    {
+                        gr = new GroupRatingModel()
+                        {
+                            Grade = myGrade,
+                            PropositionCriterionId = criterion.Id,
+                            GroupId = group.Id
+                        };
+                    }
+                    else  gr.Grade += myGrade;
+                }
+            }
+
+            _context.SaveChanges();
+        }
+
+        async public Task<List<RatingGetDTO>> GetAllRatings()
         {
             var ratings = await _context.Ratings.Select(r => new
             {
@@ -143,7 +188,7 @@ namespace hackweek_backend.Services
             
             for(int i = 0; i < ratings.Count; i++)
             {
-                int grade = CalculateFinalGradeByAvaliador(ratings[i].Id);
+                double grade = CalculateFinalGradeByRating(ratings[i].Id);
                 if (grade <= 0) i++;
                 RatingGetDTO j = new RatingGetDTO()
                 {
@@ -154,20 +199,20 @@ namespace hackweek_backend.Services
 
                 retorno.Add(j);
             }
-
             return retorno;
         }
 
-        async public Task<List<RatingGetDTO>> GetAllRatingsByGroup(int idGroup)
+        async public Task<List<RatingGetDTO>> GetRatingsByGroup(int idGroup)
         {
-            var ratings = await _context.Ratings.Where(r => r.GroupId == idGroup).ToListAsync();
+            List<RatingModel> ratings = await _context.Ratings.Where(r => r.GroupId == idGroup).ToListAsync();
             if (ratings.Count == 0 || ratings == null) return null;
+
 
             List<RatingGetDTO> retorno = new List<RatingGetDTO>();
 
             foreach(var r in ratings)
             {
-                int grade = CalculateFinalGradeByAvaliador(r.Id);
+                double grade = CalculateFinalGradeByRating(r.Id);
                 
                 RatingGetDTO j = new RatingGetDTO 
                 {
@@ -175,18 +220,12 @@ namespace hackweek_backend.Services
                     User = new UserDto(r.User),
                     Group = new GroupDto(r.Group),
                 };
-
                 retorno.Add(j);
             }
-
             return retorno;
-
-
         }
 
-
-        //Cadastrando X nota de X criterio de X grupo por X avaliador
-        async public Task CreateGrade(GradeDTO grade)
+       /* async public Task CreateGrade(GradeDTO grade)
         {
             if (grade.Grade < 0) throw new Exception("Notas tem que ser positivas!");
             RatingCriterionModel Grade = new RatingCriterionModel();
@@ -197,11 +236,30 @@ namespace hackweek_backend.Services
             Grade.CriterionId = grade.Criterion.Id;
             _context.RatingCriteria.Add(Grade);
             await _context.SaveChangesAsync();
+        }*/
+
+        //Raphael
+        async public Task StartRating(int idGroup)
+        {
+            var group = await _context.Groups.FindAsync(idGroup) ?? throw new Exception($"Grupo não encontrado! ({idGroup})");
+
+            group.StartTime ??= DateTime.Now;
+            group.EndTime = null;
+            await _context.SaveChangesAsync();
         }
 
-        async public Task UpdateRating(int id, RatingModel request)
+        //Raphael
+        async public Task EndRating(int idGroup)
         {
-            throw new NotImplementedException();
+            var group = await _context.Groups.FindAsync(idGroup) ?? throw new Exception($"Grupo não encontrado! ({idGroup})");
+            var criteria = await _context.PropositionsCriteria.Where(pc => pc.PropositionId == group.PropositionId).ToListAsync();
+            
+            CalculateCriterionGradeByGroup(group);
+            group.FinalGrade = (uint) CalculateFinalGradeByGroup(idGroup);
+            group.EndTime ??= DateTime.Now;
+            await _context.SaveChangesAsync();
         }
+
+        
     }
 }
