@@ -12,8 +12,6 @@ namespace hackweek_backend.Services
         private readonly DataContext _context;
         public RatingService(DataContext context) { _context = context; }
 
-
-        //criando a avaliação
         async public Task CreateRating(RatingDTO rating)
         {
             RatingModel model = new RatingModel();
@@ -31,10 +29,12 @@ namespace hackweek_backend.Services
                     RatingId = model.Id,
                     CriterionId = item.CriterionId,
                 };
-
                 _context.RatingCriteria.Add(rc);
             }
+
             await _context.SaveChangesAsync();
+
+            UpdateGroup(model.GroupId);
         }
 
         async public Task DeleteRating(int id)
@@ -47,9 +47,6 @@ namespace hackweek_backend.Services
            await _context.SaveChangesAsync();
         }
 
-
-        // Retorna a avaliação inteira (por ID): Avaliador, Grupo e Nota Final do avaliador
-        // Exemplo: Quero pegar avaliação de X grupo do Y avaliador
         public async Task<RatingGetDTO> GetRatingById(int id)
         {
             var rating = await _context.Ratings
@@ -123,12 +120,20 @@ namespace hackweek_backend.Services
 
             // Soma a nota de todas as avaliações desse grupo
             foreach(var i in ratingsGroup)  finalGrade += CalculateFinalGradeByRating(i.Id);
-            
 
             // Divide a nota final pelo o numero de avaliacoes
             finalGrade = finalGrade / ratingsGroup.Count();
 
             return finalGrade;
+        }
+
+        public void UpdateGroup(int idGrupo)
+        {
+            var group = _context.Groups.FirstOrDefault(g => g.Id == idGrupo);
+            group.FinalGrade = CalculateFinalGradeByGroup(idGrupo);
+            CalculateCriterionGradeByGroup(idGrupo);
+
+
         }
 
         public Dictionary<int, double> CalculateCriterionGradeByGroup(int idGrupo)
@@ -199,7 +204,7 @@ namespace hackweek_backend.Services
             return retorno;
         }
 
-        async public Task CreateGrade(GradeDTO grade)
+       /* async public Task CreateGrade(GradeDTO grade)
         {
             if (grade.Grade < 0) throw new Exception("Notas tem que ser positivas!");
             RatingCriterionModel Grade = new RatingCriterionModel();
@@ -210,7 +215,7 @@ namespace hackweek_backend.Services
             Grade.CriterionId = grade.Criterion.Id;
             _context.RatingCriteria.Add(Grade);
             await _context.SaveChangesAsync();
-        }
+        }*/
 
         //Raphael
         async public Task StartRating(int idGroup)
