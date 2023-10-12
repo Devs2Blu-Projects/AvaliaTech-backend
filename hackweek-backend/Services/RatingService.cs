@@ -103,7 +103,7 @@ namespace hackweek_backend.Services
                 if (weights[i] == null) throw new Exception("ERRO! Peso ou nota abaixo de 0");
                 finalGrade += grades[i] * (int)weights[i];
             }
-
+            rating.FinalGrade = finalGrade;
             return finalGrade;
         }
 
