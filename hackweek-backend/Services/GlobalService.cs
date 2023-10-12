@@ -10,6 +10,11 @@ namespace hackweek_backend.Services
 
         public GlobalService(DataContext context) { _context = context; }
 
+        async public Task<GlobalModel> GetGlobal()
+        {
+            return await _context.Global.FirstAsync();
+        }
+
         async public Task<EventModel?> GetCurrentEvent()
         {
             var global = await _context.Global.Include(g => g.CurrentEvent).FirstAsync();

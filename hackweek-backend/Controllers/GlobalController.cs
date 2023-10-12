@@ -17,7 +17,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("currentEvent")]
-        [Authorize(Roles = UserRoles.Admin)]
+        [AllowAnonymous]
         public async Task<ActionResult<EventModel?>> GetCurrentEvent()
         {
             return Ok(await _service.GetCurrentEvent());

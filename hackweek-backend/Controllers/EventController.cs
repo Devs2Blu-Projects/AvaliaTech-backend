@@ -17,14 +17,14 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = UserRoles.Admin)]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<EventModel>>> GetEvents()
         {
             return Ok(await _service.GetEvents());
         }
 
         [HttpGet("{Id}")]
-        [Authorize(Roles = UserRoles.Admin)]
+        [AllowAnonymous]
         public async Task<ActionResult<EventModel?>> GetEventById(int Id)
         {
             return Ok(await _service.GetEventById(Id));
