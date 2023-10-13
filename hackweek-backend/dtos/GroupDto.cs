@@ -12,7 +12,7 @@ namespace hackweek_backend.DTOs
         public PropositionModel? Proposition { get; set; }
         public string ProjectName { get; set; } = string.Empty;
         public string ProjectDescription { get; set; } = string.Empty;
-        public uint FinalGrade { get; set; }
+        public double FinalGrade { get; set; }
         public uint Position { get; set; }
         public uint DateOffset { get; set; }
         public int UserId { get; set; }
