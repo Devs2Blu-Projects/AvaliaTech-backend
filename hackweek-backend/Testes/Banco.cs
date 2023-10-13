@@ -1,5 +1,4 @@
 ﻿using hackweek_backend.Models;
-using System.Collections.Generic;
 
 namespace hackweek_backend.Testes
 {
@@ -52,7 +51,7 @@ namespace hackweek_backend.Testes
             }
         };
 
-        public  static List<CriterionModel> criteria = new List<CriterionModel> 
+        public static List<CriterionModel> criteria = new List<CriterionModel>
         {
             new CriterionModel()
             {

@@ -1,7 +1,6 @@
 ﻿using hackweek_backend.Data;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace hackweek_backend.Services
 {
@@ -21,10 +20,10 @@ namespace hackweek_backend.Services
             var criteria = await _context.Criteria.FirstOrDefaultAsync(c => c.Id == id);
 
             if (criteria == null) throw new ArgumentException("ID não encontrado");
-            
+
             _context.Criteria.Remove(criteria);
             await _context.SaveChangesAsync();
-          
+
         }
 
         async public Task<IEnumerable<CriterionModel>> GetCriteria()
@@ -34,8 +33,8 @@ namespace hackweek_backend.Services
 
         async public Task<IEnumerable<CriterionModel>> GetCriteriaByProposition(int idProposition)
         {
-           var criteria =  await _context.PropositionsCriteria.Where(c => c.PropositionId == idProposition).Select(c => c.Criterion).ToListAsync();
-           return (criteria == null || criteria.Count == 0) ? null : criteria; 
+            var criteria = await _context.PropositionsCriteria.Where(c => c.PropositionId == idProposition).Select(c => c.Criterion).ToListAsync();
+            return (criteria == null || criteria.Count == 0) ? null : criteria;
         }
 
         async public Task<CriterionModel?> GetCriterionById(int id)

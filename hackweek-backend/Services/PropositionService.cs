@@ -2,11 +2,7 @@
 using hackweek_backend.DTOs;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace hackweek_backend.Services
 {
@@ -29,7 +25,6 @@ namespace hackweek_backend.Services
 
                 var propositions = await _context.Propositions
                     .Where(p => p.EventId == eventId)
-                    .Include(p => p.EventCriteria)
                     .ToListAsync();
                 return propositions;
             }
@@ -43,7 +38,8 @@ namespace hackweek_backend.Services
         {
             try
             {
-                var proposition = await _context.Propositions.Include(p => p.EventCriteria).FirstOrDefaultAsync(p => p.Id == id);
+                var proposition = await _context.Propositions
+                    .FirstOrDefaultAsync(p => p.Id == id);
                 return proposition;
             }
             catch (Exception e)
@@ -60,7 +56,7 @@ namespace hackweek_backend.Services
 
                 if (eventId == null)
                 {
-                    throw new ArgumentNullException(nameof(request), "Evento atual não selecionado!");
+                    throw new ArgumentNullException(nameof(request), "Desafio atual não selecionado!");
                 }
 
                 if (request == null)
@@ -77,11 +73,6 @@ namespace hackweek_backend.Services
                 {
                     Name = request.Name,
                     EventId = eventId,
-                    EventCriteria = request.PropositionCriteria?.Select(c => new EventCriterionModel
-                    {
-                        Weight = c.Weight,
-                        CriterionId = c.CriterionId
-                    }).ToList()
                 };
 
                 _context.Propositions.Add(proposition);
@@ -116,7 +107,7 @@ namespace hackweek_backend.Services
         {
             try
             {
-                var proposition = await _context.Propositions.Include(p => p.EventCriteria).FirstOrDefaultAsync(p => p.Id == id);
+                var proposition = await _context.Propositions.FirstOrDefaultAsync(p => p.Id == id);
                 if (proposition == null)
                 {
                     throw new Exception($"Desafio com o identificador {id} não encontrado.");
@@ -125,34 +116,6 @@ namespace hackweek_backend.Services
                 if (!string.IsNullOrWhiteSpace(request.Name))
                 {
                     proposition.Name = request.Name;
-                }
-
-                if (request.PropositionCriteria != null)
-                {
-                    if (!request.PropositionCriteria.Any())
-                    {
-                        proposition.EventCriteria?.Clear();
-                    }
-                    else
-                    {
-                        foreach (var criterionDTO in request.PropositionCriteria)
-                        {
-                            var existingCriterion = proposition.EventCriteria?.FirstOrDefault(c => c.CriterionId == criterionDTO.CriterionId);
-                            if (existingCriterion != null)
-                            {
-                                existingCriterion.Weight = criterionDTO.Weight;
-                            }
-                            else
-                            {
-                                var newCriterion = new EventCriterionModel
-                                {
-                                    Weight = criterionDTO.Weight,
-                                    CriterionId = criterionDTO.CriterionId
-                                };
-                                proposition.EventCriteria?.Add(newCriterion);
-                            }
-                        }
-                    }
                 }
 
                 await _context.SaveChangesAsync();

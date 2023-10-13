@@ -1,5 +1,3 @@
-using hackweek_backend.dtos;
-using hackweek_backend.DTOs;
 using hackweek_backend.Models;
 
 namespace hackweek_backend.Services.Interfaces

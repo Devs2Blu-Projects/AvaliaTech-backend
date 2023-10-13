@@ -1,5 +1,4 @@
 ﻿using hackweek_backend.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace hackweek_backend.Data
 {

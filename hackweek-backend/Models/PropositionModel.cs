@@ -7,7 +7,5 @@
         public double TotalWeight { get; set; }
         public int EventId { get; set; }
         public EventModel? Event { get; set; }
-
-        public List<EventCriterionModel> EventCriteria { get; set; }
     }
 }

@@ -1,9 +1,6 @@
-﻿using Azure.Core;
-using hackweek_backend.Data;
+﻿using hackweek_backend.Data;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace hackweek_backend.Services
 {
@@ -35,7 +32,7 @@ namespace hackweek_backend.Services
 
             _context.Events.Remove(events);
             await _context.SaveChangesAsync();
-          
+
         }
 
         async public Task UpdateEvent(int id, EventModel request)
