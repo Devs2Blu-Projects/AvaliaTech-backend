@@ -127,7 +127,7 @@ namespace hackweek_backend.Data
                 new EventModel
                 {
                     Id = 1,
-                    Name = _config["Seed:Event:Name"] ?? string.Empty,
+                    Name = _config["Seed:Event:Name"] ?? "HackWeek 2023",
                     StartDate = (DateTime.TryParse(_config["Seed:Event:StartDate"], out DateTime eventStart) ? eventStart : DateTime.Parse("2023-10-31")),
                     EndDate = (DateTime.TryParse(_config["Seed:Event:EndDate"], out DateTime eventEnd) ? eventEnd : DateTime.Parse("2023-10-31")),
                 });
