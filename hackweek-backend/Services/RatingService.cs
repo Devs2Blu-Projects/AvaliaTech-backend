@@ -10,10 +10,19 @@ namespace hackweek_backend.Services
     public class RatingService : IRatingService
     {
         private readonly DataContext _context;
-        public RatingService(DataContext context) { _context = context; }
+        private readonly IGlobalService _globalService;
+        public RatingService(DataContext context, IGlobalService globalService)
+        {
+            _context = context;
+            _globalService = globalService;
+        }
 
         async public Task CreateRating(RatingDTO rating)
         {
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+
+            if (currentEvent.IsClosed) throw new Exception("Evento encerrado!");
+
             RatingModel model = new RatingModel();
             model.UserId = rating.UserId;
             model.GroupId = rating.GroupId;

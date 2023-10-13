@@ -6,5 +6,6 @@ namespace hackweek_backend.Services.Interfaces
     {
         Task<string> Login(LoginDto request);
         bool HasAccessToUser(HttpContext httpContext, int idUser);
+        string GetUserRole(HttpContext httpContext);
     }
 }
