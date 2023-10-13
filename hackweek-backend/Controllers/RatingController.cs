@@ -93,35 +93,5 @@ namespace hackweek_backend.Controllers
                 return BadRequest(e);
             }
         }
-
-        [HttpPatch("group/{id}/start")]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> StartRating(int id)
-        {
-            try
-            {
-                await _service.StartRating(id);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-
-        [HttpPatch("group/{id}/end")]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> EndRating(int id)
-        {
-            try
-            {
-                await _service.EndRating(id);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
     }
 }

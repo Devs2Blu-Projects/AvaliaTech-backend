@@ -12,6 +12,8 @@ namespace hackweek_backend.Data
         }
 
         public DbSet<CriterionModel> Criteria { get; set; }
+        public DbSet<EventModel> Events { get; set; }
+        public DbSet<GlobalModel> Global { get; set; }
         public DbSet<GroupModel> Groups { get; set; }
         public DbSet<GroupRatingModel> GroupRatings { get; set; }
         public DbSet<PropositionCriterionModel> PropositionsCriteria { get; set; }
@@ -24,6 +26,12 @@ namespace hackweek_backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<GlobalModel>()
+                .HasOne(gl => gl.CurrentEvent)
+                .WithOne()
+                .HasForeignKey<GlobalModel>(gl => gl.CurrentEventId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<GroupModel>()
                 .HasOne(g => g.User)
                 .WithOne()
@@ -35,6 +43,12 @@ namespace hackweek_backend.Data
                 .WithMany()
                 .HasForeignKey(g => g.PropositionId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<GroupModel>()
+                .HasOne(g => g.Event)
+                .WithMany()
+                .HasForeignKey(g => g.EventId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<GroupRatingModel>()
                 .HasOne(gr => gr.Group)
@@ -85,17 +99,44 @@ namespace hackweek_backend.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserModel>()
-                .HasIndex(u => u.Username)
+                .HasOne(u => u.Event)
+                .WithMany()
+                .HasForeignKey(u => u.EventId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserModel>()
+                .HasIndex(u => new { u.EventId, u.Username })
+                .IsUnique();
+
+            modelBuilder.Entity<GroupModel>()
+                .HasIndex(g => new { g.EventId, g.ProjectName })
                 .IsUnique();
 
             modelBuilder.Entity<UserModel>().HasData(
-                new UserModel 
-                { 
-                    Id = 1, 
+                new UserModel
+                {
+                    Id = 1,
                     Name = "Admin",
-                    Username = _config["Seed:Admin:Username"]!,
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(_config["Seed:Admin:Password"]!),
-                    Role = UserRoles.Admin 
+                    Username = _config["Seed:Admin:Username"] ?? "admin",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(_config["Seed:Admin:Password"] ?? "13579"),
+                    Role = UserRoles.Admin,
+                    EventId = null
+                });
+
+            modelBuilder.Entity<EventModel>().HasData(
+                new EventModel
+                {
+                    Id = 1,
+                    Name = _config["Seed:Event:Name"] ?? "HackWeek 2023",
+                    StartDate = (DateTime.TryParse(_config["Seed:Event:StartDate"], out DateTime eventStart) ? eventStart : DateTime.Parse("2023-10-31")),
+                    EndDate = (DateTime.TryParse(_config["Seed:Event:EndDate"], out DateTime eventEnd) ? eventEnd : DateTime.Parse("2023-10-31")),
+                });
+
+            modelBuilder.Entity<GlobalModel>().HasData(
+                new GlobalModel
+                {
+                    Id = 1,
+                    CurrentEventId = 1
                 });
         }
     }

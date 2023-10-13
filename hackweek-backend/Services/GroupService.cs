@@ -9,8 +9,13 @@ namespace hackweek_backend.Services
     public class GroupService : IGroupService
     {
         private readonly DataContext _context;
+        private readonly IGlobalService _globalService;
 
-        public GroupService(DataContext context) { _context = context; }
+        public GroupService(DataContext context, IGlobalService globalService)
+        {
+            _context = context;
+            _globalService = globalService;
+        }
 
         public async Task<IEnumerable<GroupDto>> GetGroups()
         {
@@ -58,35 +63,30 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupDto>> GetGroupsRanking()
         {
-            return await _context.Groups
-                .OrderByDescending(g => g.FinalGrade)
-                .Include(g => g.Proposition).Include(g => g.GroupRatings)
-                .Select(g => new GroupDto(g)).ToListAsync();
-        }
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
 
-        public async Task<IEnumerable<GroupDto>> GetGroupsOnQueue()
-        {
+            if (!currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
+
+            var propositionIds = await _context.Propositions
+                .Where(p => p.EventId == currentEvent.Id)
+                .Select(p => p.Id).ToListAsync();
+
             return await _context.Groups
-                .Where(g => g.EndTime == null)
-                .Include(g => g.Proposition)
+                .Where(g => propositionIds.Contains(g.PropositionId ?? -1))
+                .Include(g => g.Proposition).Include(g => g.GroupRatings)
+                .OrderByDescending(g => g.FinalGrade)
                 .Select(g => new GroupDto(g)).ToListAsync();
         }
 
         public async Task<IEnumerable<GroupDto>> GetGroupsToRate(int idUser)
         {
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+
             var ratedGroupIdList = await _context.Ratings.Where(r => r.UserId == idUser).Select(r => r.GroupId).ToListAsync();
 
             return await _context.Groups
                 .Include(g => g.Proposition)
-                .Where(g => (g.StartTime != null) && (!ratedGroupIdList.Contains(g.Id)))
-                .Select(g => new GroupDto(g)).ToListAsync();
-        }
-
-        public async Task<IEnumerable<GroupDto>> GetGroupsDone()
-        {
-            return await _context.Groups
-                .Where(g => g.EndTime != null)
-                .Include(g => g.Proposition).Include(g => g.GroupRatings)
+                .Where(g => (!ratedGroupIdList.Contains(g.Id)) && (DateTime.Now == currentEvent.StartDate.AddDays(g.DateOffset)))
                 .Select(g => new GroupDto(g)).ToListAsync();
         }
     }

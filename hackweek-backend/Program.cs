@@ -25,6 +25,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICriterionService, CriterionService>();
 builder.Services.AddScoped<IPropositionService, PropositionService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IGlobalService, GlobalService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 

@@ -9,16 +9,22 @@ namespace hackweek_backend.Services
     public class PropositionService : IPropositionService
     {
         private readonly DataContext _context;
-        public PropositionService(DataContext context)
+        private readonly IGlobalService _globalService;
+        public PropositionService(DataContext context, IGlobalService globalService)
         {
             _context = context;
+            _globalService = globalService;
         }
 
         public async Task<IEnumerable<PropositionModel>> GetPropositions()
         {
             try
             {
-                var propositions = await _context.Propositions.ToListAsync();
+                var eventId = (await _globalService.GetGlobal()).CurrentEventId;
+
+                var propositions = await _context.Propositions
+                    .Where(p => p.EventId == eventId)
+                    .Include(p => p.PropositionCriteria).ToListAsync();
                 return propositions;
             }
             catch (Exception e)
@@ -31,7 +37,7 @@ namespace hackweek_backend.Services
         {
             try
             {
-                var proposition = await _context.Propositions.FindAsync(id);
+                var proposition = await _context.Propositions.Include(p => p.PropositionCriteria).FirstOrDefaultAsync(p => p.Id == id);
                 return proposition;
             }
             catch (Exception e)
@@ -44,6 +50,8 @@ namespace hackweek_backend.Services
         {
             try
             {
+                var eventId = (await _globalService.GetGlobal()).CurrentEventId ?? throw new ArgumentNullException(nameof(request), "Evento atual não selecionado!");
+                
                 if (request == null)
                 {
                     throw new ArgumentNullException(nameof(request), "Os dados do desafio não podem ser nulos.");
@@ -57,6 +65,7 @@ namespace hackweek_backend.Services
                 var proposition = new PropositionModel
                 {
                     Name = request.Name,
+                    EventId = eventId,
                     PropositionCriteria = request.PropositionCriteria?.Select(c => new PropositionCriterionModel
                     {
                         Weight = c.Weight,
@@ -144,6 +153,5 @@ namespace hackweek_backend.Services
                 throw new Exception($"Erro ao atualizar o desafio com o identificador {id}.", e);
             }
         }
-
     }
 }

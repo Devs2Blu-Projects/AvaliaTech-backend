@@ -9,6 +9,8 @@ namespace hackweek_backend.Services
     public class UserService : IUserService
     {
         private readonly DataContext _context;
+        private readonly IGlobalService _globalService;
+
         private readonly string[] _allowCreateRoleList = {
             UserRoles.Group,
             UserRoles.User,
@@ -18,13 +20,9 @@ namespace hackweek_backend.Services
             UserRoles.User,
         };
 
-        public UserService(DataContext context) { _context = context; }
-
-        public async Task<IEnumerable<UserDto>> GetUsers()
-        {
-            return await _context.Users
-                .Select(u => new UserDto(u))
-                .ToListAsync();
+        public UserService(DataContext context, IGlobalService globalService) {
+            _context = context;
+            _globalService = globalService;
         }
 
         public async Task<UserDto?> GetUserById(int id)
@@ -42,26 +40,31 @@ namespace hackweek_backend.Services
 
             if (_allowCreateRoleList.FirstOrDefault(r => r == request.Role) == null) throw new Exception($"Cargo inválido! ({request.Role})");
 
-            var model = new UserModel
+            var eventId = (await _globalService.GetGlobal()).CurrentEventId ?? throw new Exception($"Evento atual não selecionado!");
+
+            var userModel = new UserModel
             {
                 Username = request.Username,
                 Name = request.Name,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Role = request.Role,
+                EventId = eventId,
             };
 
-            await _context.Users.AddAsync(model);
+            await _context.Users.AddAsync(userModel);
             await _context.SaveChangesAsync();
 
-            if (request.Role == UserRoles.Group)
+            if (request.Role == UserRoles.Group) await InternalCreateGroup(userModel.Id, eventId);
+        }
+
+        private async Task InternalCreateGroup(int userId, int eventId)
+        {
+            await _context.Groups.AddAsync(new GroupModel
             {
-                await _context.Groups.AddAsync(new GroupModel
-                {
-                    UserId = model.Id,
-                    Position = (await _context.Groups.AnyAsync()) ? await _context.Groups.MaxAsync(g => g.Position) + 1 : 1,
-                });
-                await _context.SaveChangesAsync();
-            }
+                UserId = userId,
+                Position = (await _context.Groups.AnyAsync()) ? await _context.Groups.MaxAsync(g => g.Position) + 1 : 1,
+                EventId = eventId,
+            });
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteUser(int id)
@@ -92,16 +95,17 @@ namespace hackweek_backend.Services
 
             user.Username = request.Username;
             user.Name = request.Name;
-            if (request.Password != string.Empty) user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<UserDto>> GetUsersByRole(string role)
+        public async Task<IEnumerable<UserDto>> GetUsersEventByRole(string role)
         {
             if (_allowGetByRoleList.FirstOrDefault(r => r == role) == null) return new List<UserDto>();
 
-            return await _context.Users.Where(u => u.Role == role)
+            var global = await _globalService.GetGlobal();
+
+            return await _context.Users.Where(u => (u.Role == role) && (u.EventId == global.CurrentEventId))
                 .Select(u => new UserDto(u))
                 .ToListAsync();
         }

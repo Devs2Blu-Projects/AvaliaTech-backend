@@ -12,7 +12,5 @@ namespace hackweek_backend.Services.Interfaces
         Task DeleteRating(int id);
         Task<RatingGetDTO> GetRatingById(int id);
         Task<List<RatingGetDTO>> GetAllRatings();
-        Task StartRating(int idGroup);
-        Task EndRating(int idGroup);
     }
 }
