@@ -4,7 +4,7 @@ namespace hackweek_backend.Testes
 {
     public class Banco
     {
-        public static List<UserModel> user = new List<UserModel>
+        public static List<UserModel> users = new List<UserModel>
         {
             new UserModel
             {
@@ -29,8 +29,7 @@ namespace hackweek_backend.Testes
             new PropositionModel
             {
                 Id = 1,
-                Name = "Desafio 1",
-                PropositionCriteria = weights
+                Name = "Desafio 1"
             }
         };
 
@@ -45,9 +44,8 @@ namespace hackweek_backend.Testes
                 Language = "C#",
                 UserId = 2,
                 PropositionId = 1,
-                User = user[1],
+                User = users[1],
                 Proposition = propositions[0]
-
             }
         };
 
@@ -73,36 +71,34 @@ namespace hackweek_backend.Testes
             },
         };
 
-        public static List<PropositionCriterionModel> weights = new List<PropositionCriterionModel>
+        public static List<EventCriterionModel> weights = new List<EventCriterionModel>
         {
-            new PropositionCriterionModel()
+            new EventCriterionModel()
             {
                 Id = 1,
                 Weight = 5,
-                PropositionId = 1,
+                EventId = 1,
                 CriterionId = 1,
-                Proposition = propositions[0],
                 Criterion = criteria[0]
             },
-            new PropositionCriterionModel()
+            new EventCriterionModel()
             {
                 Id = 2,
                 Weight = 3,
-                PropositionId = 1,
+                EventId = 1,
                 CriterionId = 2,
-                Proposition = propositions[0],
                 Criterion = criteria[1]
             },
-            new PropositionCriterionModel()
+            new EventCriterionModel()
             {
                 Id = 3,
                 Weight = 2,
-                PropositionId = 1,
+                EventId = 1,
                 CriterionId = 3,
-                Proposition = propositions[0],
                 Criterion = criteria[2]
             }
         };
+
         public static List<RatingModel> ratings = new List<RatingModel>
         {
             new RatingModel()
@@ -111,9 +107,8 @@ namespace hackweek_backend.Testes
                 GroupId = 1,
                 UserId = 1,
                 Group = groups[0],
-                User = user[0]
+                User = users[0]
             }
         };
-
     }
 }

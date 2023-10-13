@@ -1,6 +1,9 @@
 ﻿using hackweek_backend.DTOs;
+using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace hackweek_backend.Controllers
 {
