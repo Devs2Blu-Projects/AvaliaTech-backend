@@ -14,8 +14,7 @@ namespace hackweek_backend.DTOs
         public string ProjectDescription { get; set; } = string.Empty;
         public uint FinalGrade { get; set; }
         public uint Position { get; set; }
-        public DateTime? StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
+        public uint DateOffset { get; set; }
         public int UserId { get; set; }
         public List<GroupRatingDto>? GroupRatings { get; set; }
 
@@ -34,8 +33,7 @@ namespace hackweek_backend.DTOs
                 ProjectDescription = group.ProjectDescription;
                 FinalGrade = group.FinalGrade;
                 Position = group.Position;
-                StartTime = group.StartTime;
-                EndTime = group.EndTime;
+                DateOffset = group.DateOffset;
                 UserId = group.UserId;
                 GroupRatings = group.GroupRatings?.Select(gr => new GroupRatingDto(gr)).ToList();
             }

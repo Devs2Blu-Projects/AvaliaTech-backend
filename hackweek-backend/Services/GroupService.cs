@@ -78,29 +78,15 @@ namespace hackweek_backend.Services
                 .Select(g => new GroupDto(g)).ToListAsync();
         }
 
-        public async Task<IEnumerable<GroupDto>> GetGroupsOnQueue()
-        {
-            return await _context.Groups
-                .Where(g => g.EndTime == null)
-                .Include(g => g.Proposition)
-                .Select(g => new GroupDto(g)).ToListAsync();
-        }
-
         public async Task<IEnumerable<GroupDto>> GetGroupsToRate(int idUser)
         {
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+
             var ratedGroupIdList = await _context.Ratings.Where(r => r.UserId == idUser).Select(r => r.GroupId).ToListAsync();
 
             return await _context.Groups
                 .Include(g => g.Proposition)
-                .Where(g => (g.StartTime != null) && (!ratedGroupIdList.Contains(g.Id)))
-                .Select(g => new GroupDto(g)).ToListAsync();
-        }
-
-        public async Task<IEnumerable<GroupDto>> GetGroupsDone()
-        {
-            return await _context.Groups
-                .Where(g => g.EndTime != null)
-                .Include(g => g.Proposition).Include(g => g.GroupRatings)
+                .Where(g => (!ratedGroupIdList.Contains(g.Id)) && (DateTime.Now == currentEvent.StartDate.AddDays(g.DateOffset)))
                 .Select(g => new GroupDto(g)).ToListAsync();
         }
     }

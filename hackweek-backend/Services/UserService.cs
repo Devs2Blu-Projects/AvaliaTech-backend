@@ -46,7 +46,6 @@ namespace hackweek_backend.Services
             {
                 Username = request.Username,
                 Name = request.Name,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Role = request.Role,
                 EventId = eventId,
             };
@@ -96,7 +95,6 @@ namespace hackweek_backend.Services
 
             user.Username = request.Username;
             user.Name = request.Name;
-            if (request.Password != string.Empty) user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             await _context.SaveChangesAsync();
         }

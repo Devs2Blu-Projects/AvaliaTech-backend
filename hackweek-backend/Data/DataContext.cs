@@ -26,6 +26,12 @@ namespace hackweek_backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<GlobalModel>()
+                .HasOne(gl => gl.CurrentEvent)
+                .WithOne()
+                .HasForeignKey<GlobalModel>(gl => gl.CurrentEventId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<GroupModel>()
                 .HasOne(g => g.User)
                 .WithOne()
@@ -37,6 +43,12 @@ namespace hackweek_backend.Data
                 .WithMany()
                 .HasForeignKey(g => g.PropositionId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<GroupModel>()
+                .HasOne(g => g.Event)
+                .WithMany()
+                .HasForeignKey(g => g.EventId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<GroupRatingModel>()
                 .HasOne(gr => gr.Group)
@@ -87,6 +99,12 @@ namespace hackweek_backend.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserModel>()
+                .HasOne(u => u.Event)
+                .WithMany()
+                .HasForeignKey(u => u.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserModel>()
                 .HasIndex(u => new { u.EventId, u.Username })
                 .IsUnique();
 
@@ -110,8 +128,8 @@ namespace hackweek_backend.Data
                 {
                     Id = 1,
                     Name = _config["Seed:Event:Name"] ?? string.Empty,
-                    StartDate = (DateTime.TryParse(_config["Seed:Event:StartDate"], out DateTime eventStart) ? eventStart : null),
-                    EndDate = (DateTime.TryParse(_config["Seed:Event:EndDate"], out DateTime eventEnd) ? eventEnd : null),
+                    StartDate = (DateTime.TryParse(_config["Seed:Event:StartDate"], out DateTime eventStart) ? eventStart : DateTime.Parse("2023-10-31")),
+                    EndDate = (DateTime.TryParse(_config["Seed:Event:EndDate"], out DateTime eventEnd) ? eventEnd : DateTime.Parse("2023-10-31")),
                 });
 
             modelBuilder.Entity<GlobalModel>().HasData(

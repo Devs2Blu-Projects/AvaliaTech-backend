@@ -73,13 +73,6 @@ namespace hackweek_backend.Controllers
             return Ok(await _service.GetGroupsRanking());
         }
 
-        [HttpGet("queue")]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsOnQueue()
-        {
-            return Ok(await _service.GetGroupsOnQueue());
-        }
-
         [HttpGet("rate/{idUser}")]
         [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.User}")]
         public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsToRate(int idUser)
@@ -87,13 +80,6 @@ namespace hackweek_backend.Controllers
             if (!_login.HasAccessToUser(HttpContext, idUser)) return Unauthorized();
 
             return Ok(await _service.GetGroupsToRate(idUser));
-        }
-
-        [HttpGet("done")]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsDone()
-        {
-            return Ok(await _service.GetGroupsDone());
         }
     }
 }
