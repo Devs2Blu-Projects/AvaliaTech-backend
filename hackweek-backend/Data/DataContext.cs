@@ -102,7 +102,7 @@ namespace hackweek_backend.Data
                 .HasOne(u => u.Event)
                 .WithMany()
                 .HasForeignKey(u => u.EventId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserModel>()
                 .HasIndex(u => new { u.EventId, u.Username })
