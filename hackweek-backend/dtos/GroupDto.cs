@@ -1,5 +1,4 @@
-﻿using hackweek_backend.dtos;
-using hackweek_backend.Models;
+﻿using hackweek_backend.Models;
 
 namespace hackweek_backend.DTOs
 {

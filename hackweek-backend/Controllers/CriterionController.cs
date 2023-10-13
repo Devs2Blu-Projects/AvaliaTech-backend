@@ -1,11 +1,7 @@
-﻿using Azure.Core;
-using hackweek_backend.Models;
-using hackweek_backend.Services;
+﻿using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
 
 namespace hackweek_backend.Controllers
 {
@@ -40,7 +36,7 @@ namespace hackweek_backend.Controllers
         {
             try
             {
-                var result =  await _service.GetCriterionById(Id);
+                var result = await _service.GetCriterionById(Id);
                 return Ok(result);
             }
             catch (Exception e)
@@ -73,19 +69,19 @@ namespace hackweek_backend.Controllers
                 var result = await _service.GetCriteria();
                 return Ok(result);
             }
-            catch(Exception e) 
-            { 
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
         }
 
         [HttpGet("proposition/{IdProposition}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetCriteriaByProposition(int IdProposition)
+        public async Task<IActionResult> GetCriteriaByEvent(int IdEvent)
         {
             try
             {
-                var result = await _service.GetCriteriaByProposition(IdProposition);
+                var result = await _service.GetCriteriaByEvent(IdEvent);
                 return Ok(result);
             }
             catch (Exception e)

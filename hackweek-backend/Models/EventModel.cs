@@ -4,9 +4,13 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public double TotalWeight {  get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsClosed { get; set; }
         public bool IsPublic { get; set; }
+
+        public List<PropositionModel> Propositions { get; set; }
+        public List<EventCriterionModel> EventCriteria { get; set; }
     }
 }

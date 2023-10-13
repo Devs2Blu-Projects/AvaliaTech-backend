@@ -1,5 +1,4 @@
 ﻿using hackweek_backend.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace hackweek_backend.Data
 {
@@ -16,7 +15,7 @@ namespace hackweek_backend.Data
         public DbSet<GlobalModel> Global { get; set; }
         public DbSet<GroupModel> Groups { get; set; }
         public DbSet<GroupRatingModel> GroupRatings { get; set; }
-        public DbSet<PropositionCriterionModel> PropositionsCriteria { get; set; }
+        public DbSet<EventCriterionModel> EventCriteria { get; set; }
         public DbSet<PropositionModel> Propositions { get; set; }
         public DbSet<RatingCriterionModel> RatingCriteria { get; set; }
         public DbSet<RatingModel> Ratings { get; set; }
@@ -57,18 +56,18 @@ namespace hackweek_backend.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<GroupRatingModel>()
-                .HasOne(gr => gr.PropositionCriterion)
+                .HasOne(gr => gr.EventCriterion)
                 .WithMany()
-                .HasForeignKey(gr => gr.PropositionCriterionId)
+                .HasForeignKey(gr => gr.EventCriterionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<PropositionCriterionModel>()
-                .HasOne(pc => pc.Proposition)
-                .WithMany(p => p.PropositionCriteria)
-                .HasForeignKey(pc => pc.PropositionId)
+            modelBuilder.Entity<EventCriterionModel>()
+                .HasOne(pc => pc.Event)
+                .WithMany(p => p.EventCriteria)
+                .HasForeignKey(pc => pc.EventId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<PropositionCriterionModel>()
+            modelBuilder.Entity<EventCriterionModel>()
                 .HasOne(pc => pc.Criterion)
                 .WithMany()
                 .HasForeignKey(pc => pc.CriterionId)
