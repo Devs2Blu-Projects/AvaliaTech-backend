@@ -87,7 +87,7 @@ namespace hackweek_backend.Services
 
             foreach (var r in ratingCriterion)
             {
-                uint? weight = _context.PropositionsCriteria.FirstOrDefault(p => p.Criterion == r.Criterion)?.Weight;
+                uint? weight = _context.EventCriteria.FirstOrDefault(p => p.Criterion == r.Criterion)?.Weight;
                 if (weight != null) weights.Add(weight);
             }
 
@@ -138,7 +138,7 @@ namespace hackweek_backend.Services
         public void CalculateCriterionGradeByGroup(GroupModel group)
         {
             List<RatingModel> ratingsByGroup = _context.Ratings.Where(r => r.GroupId == group.Id).ToList();
-            var propCriterion = _context.PropositionsCriteria.Where(pc => pc.PropositionId == group.PropositionId).ToList();
+            var propCriterion = _context.EventCriteria.Where(pc => pc.EventId == group.PropositionId).ToList();
             _context.GroupRatings.Where(g => g.GroupId == group.Id).ExecuteDelete();
 
             Dictionary<int, double> lista = new Dictionary<int, double>();
@@ -152,7 +152,7 @@ namespace hackweek_backend.Services
                 foreach (var j in y)
                 {
                     double myGrade = j.Grade / ratingsByGroup.Count();
-                    var criterion = _context.PropositionsCriteria.FirstOrDefault(pc => pc.CriterionId == j.CriterionId);
+                    var criterion = _context.EventCriteria.FirstOrDefault(pc => pc.CriterionId == j.CriterionId);
                     var gr = _context.GroupRatings.FirstOrDefault(gp => gp.EventCriterionId == criterion.Id);
 
                     if (gr == null)

@@ -33,7 +33,7 @@ namespace hackweek_backend.Services
 
         async public Task<IEnumerable<CriterionModel>> GetCriteriaByProposition(int idProposition)
         {
-            var criteria = await _context.PropositionsCriteria.Where(c => c.PropositionId == idProposition).Select(c => c.Criterion).ToListAsync();
+            var criteria = await _context.EventCriteria.Where(c => c.EventId == idProposition).Select(c => c.Criterion).ToListAsync();
             return (criteria == null || criteria.Count == 0) ? null : criteria;
         }
 
