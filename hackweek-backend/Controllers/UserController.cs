@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using hackweek_backend.Services.Interfaces;
 using hackweek_backend.DTOs;
-using Microsoft.AspNetCore.Authorization;
 using hackweek_backend.Models;
+using hackweek_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace hackweek_backend.Controllers
 {
@@ -15,13 +15,6 @@ namespace hackweek_backend.Controllers
         public UserController(IUserService service)
         {
             _service = service;
-        }
-
-        [HttpGet]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
-        {
-            return Ok(await _service.GetUsers());
         }
 
         [HttpGet("{id}")]
@@ -81,9 +74,9 @@ namespace hackweek_backend.Controllers
 
         [HttpGet("role/{role}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersByRole(string role)
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersEventByRole(string role)
         {
-            return Ok(await _service.GetUsersByRole(role));
+            return Ok(await _service.GetUsersEventByRole(role));
         }
 
         [HttpGet("{id}/redefine")]

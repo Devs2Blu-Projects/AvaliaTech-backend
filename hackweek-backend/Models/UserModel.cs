@@ -7,5 +7,7 @@
         public string Name { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
+        public int? EventId { get; set; }
+        public EventModel? Event { get; set; }
     }
 }
