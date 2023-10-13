@@ -12,7 +12,7 @@ namespace hackweek_backend.Services
 
         async public Task<IEnumerable<EventModel>> GetEvents()
         {
-            return await _context.Events.ToListAsync();
+            return await _context.Events.OrderByDescending(e => e.StartDate).ToListAsync();
         }
 
         async public Task<EventModel?> GetEventById(int id)
