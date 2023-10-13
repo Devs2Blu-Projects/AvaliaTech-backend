@@ -4,9 +4,10 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public double TotalWeight { get; set; }
         public int EventId { get; set; }
         public EventModel? Event { get; set; }
 
-        public List<PropositionCriterionModel>? PropositionCriteria { get; set; }
+        public List<EventCriterionModel> EventCriteria { get; set; }
     }
 }

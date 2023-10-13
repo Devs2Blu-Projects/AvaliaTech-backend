@@ -155,14 +155,14 @@ namespace hackweek_backend.Services
                 {
                     double myGrade = j.Grade / ratingsByGroup.Count();
                     var criterion = _context.PropositionsCriteria.FirstOrDefault(pc => pc.CriterionId == j.CriterionId);
-                    var gr = _context.GroupRatings.FirstOrDefault(gp => gp.PropositionCriterionId == criterion.Id);
+                    var gr = _context.GroupRatings.FirstOrDefault(gp => gp.EventCriterionId == criterion.Id);
 
                     if(gr == null)
                     {
                         gr = new GroupRatingModel()
                         {
                             Grade = myGrade,
-                            PropositionCriterionId = criterion.Id,
+                            EventCriterionId = criterion.Id,
                             GroupId = group.Id
                         };
                     }

@@ -6,5 +6,7 @@
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int Weight { get; set; }
+
+        public List<EventCriterionModel> EventCriteria { get; set; }
     }
 }

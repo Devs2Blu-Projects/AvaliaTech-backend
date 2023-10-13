@@ -16,7 +16,7 @@ namespace hackweek_backend.DTOs
                 Id = groupRating.Id;
                 Grade = groupRating.Grade;
                 GroupId = groupRating.GroupId;
-                PropositionCriterionId = groupRating.PropositionCriterionId;
+                PropositionCriterionId = groupRating.EventCriterionId;
             }
         }
     }
