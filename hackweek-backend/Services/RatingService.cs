@@ -238,28 +238,5 @@ namespace hackweek_backend.Services
             await _context.SaveChangesAsync();
         }*/
 
-        //Raphael
-        async public Task StartRating(int idGroup)
-        {
-            var group = await _context.Groups.FindAsync(idGroup) ?? throw new Exception($"Grupo não encontrado! ({idGroup})");
-
-            group.StartTime ??= DateTime.Now;
-            group.EndTime = null;
-            await _context.SaveChangesAsync();
-        }
-
-        //Raphael
-        async public Task EndRating(int idGroup)
-        {
-            var group = await _context.Groups.FindAsync(idGroup) ?? throw new Exception($"Grupo não encontrado! ({idGroup})");
-            var criteria = await _context.PropositionsCriteria.Where(pc => pc.PropositionId == group.PropositionId).ToListAsync();
-            
-            CalculateCriterionGradeByGroup(group);
-            group.FinalGrade = (uint) CalculateFinalGradeByGroup(idGroup);
-            group.EndTime ??= DateTime.Now;
-            await _context.SaveChangesAsync();
-        }
-
-        
     }
 }
