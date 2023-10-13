@@ -97,6 +97,8 @@ namespace hackweek_backend.Services
             // soma ponderada
             for (int i = 0; i < grades.Count; i++)
             {
+                if (grades[i] < 0.00000) grades[i] = 0.00000;
+                if (grades[i] > 5.00000) grades[i] = 5.00000;
                 if (weights[i] <= 0 || grades[i] < 0) throw new Exception("ERRO! Peso ou nota abaixo de 0");
                 if (weights[i] == null) throw new Exception("ERRO! Peso ou nota abaixo de 0");
                 finalGrade += grades[i] * (int)weights[i];
@@ -152,6 +154,8 @@ namespace hackweek_backend.Services
                 // criteriosa dql avaliacao
                 foreach (var j in y)
                 {
+                    if(j.Grade < 0) j.Grade = 0;
+                    if (j.Grade > 5.00000) j.Grade = 5.00000;
                     double myGrade = j.Grade / ratingsByGroup.Count();
                     var criterion = _context.EventCriteria.FirstOrDefault(pc => pc.CriterionId == j.CriterionId);
                     var gr = _context.GroupRatings.FirstOrDefault(gp => gp.EventCriterionId == criterion.Id);
