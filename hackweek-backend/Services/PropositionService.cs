@@ -54,7 +54,7 @@ namespace hackweek_backend.Services
             {
                 var eventId = (await _globalService.GetGlobal()).CurrentEventId ?? 0;
 
-                if (eventId == null)
+                if (eventId == 0)
                 {
                     throw new ArgumentNullException(nameof(request), "Desafio atual não selecionado!");
                 }

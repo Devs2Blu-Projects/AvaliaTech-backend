@@ -138,17 +138,18 @@ namespace hackweek_backend.Services
         public void CalculateCriterionGradeByGroup(GroupModel group)
         {
             List<RatingModel> ratingsByGroup = _context.Ratings.Where(r => r.GroupId == group.Id).ToList();
-            var propCriterion = _context.EventCriteria.Where(pc => pc.EventId == group.PropositionId).ToList();
+            var propCriterion = _context.EventCriteria.Where(pc => pc.EventId == group.EventId).ToList(); 
+
             _context.GroupRatings.Where(g => g.GroupId == group.Id).ExecuteDelete();
 
             Dictionary<int, double> lista = new Dictionary<int, double>();
 
-            //Avaliacao
+            // Avaliacao
             foreach (var i in ratingsByGroup)
             {
                 var y = _context.RatingCriteria.Where(rc => rc.RatingId == i.Id).ToList();
 
-                //criteriosa dql avaliacao
+                // criteriosa dql avaliacao
                 foreach (var j in y)
                 {
                     double myGrade = j.Grade / ratingsByGroup.Count();
@@ -170,6 +171,7 @@ namespace hackweek_backend.Services
 
             _context.SaveChanges();
         }
+
 
         async public Task<List<RatingGetDTO>> GetAllRatings()
         {

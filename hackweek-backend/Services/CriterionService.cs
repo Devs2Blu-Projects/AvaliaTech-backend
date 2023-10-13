@@ -31,9 +31,9 @@ namespace hackweek_backend.Services
             return await _context.Criteria.ToListAsync();
         }
 
-        async public Task<IEnumerable<CriterionModel>> GetCriteriaByProposition(int idProposition)
+        async public Task<IEnumerable<CriterionModel>> GetCriteriaByEvent(int idEvent)
         {
-            var criteria = await _context.EventCriteria.Where(c => c.EventId == idProposition).Select(c => c.Criterion).ToListAsync();
+            var criteria = await _context.EventCriteria.Where(c => c.EventId == idEvent).Select(c => c.Criterion).ToListAsync();
             return (criteria == null || criteria.Count == 0) ? null : criteria;
         }
 

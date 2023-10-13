@@ -77,11 +77,11 @@ namespace hackweek_backend.Controllers
 
         [HttpGet("proposition/{IdProposition}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetCriteriaByProposition(int IdProposition)
+        public async Task<IActionResult> GetCriteriaByEvent(int IdEvent)
         {
             try
             {
-                var result = await _service.GetCriteriaByProposition(IdProposition);
+                var result = await _service.GetCriteriaByEvent(IdEvent);
                 return Ok(result);
             }
             catch (Exception e)
