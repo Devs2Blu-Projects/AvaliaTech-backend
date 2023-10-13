@@ -1,5 +1,4 @@
 ﻿using hackweek_backend.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace hackweek_backend.Testes
 {
@@ -55,7 +54,7 @@ namespace hackweek_backend.Testes
             // Soma a nota de todas as avaliações desse grupo
             foreach (var i in ratingsGroup)
             {
-               // finalGrade += CalculateFinalGradeByAvaliador(i.Id);
+                // finalGrade += CalculateFinalGradeByAvaliador(i.Id);
             }
 
             // Divide a nota final pelo o numero de avaliacoes

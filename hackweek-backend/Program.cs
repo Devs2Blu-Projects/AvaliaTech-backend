@@ -1,11 +1,11 @@
 global using Microsoft.EntityFrameworkCore;
 using hackweek_backend.Data;
-using System.Text.Json.Serialization;
-using hackweek_backend.Services.Interfaces;
 using hackweek_backend.Services;
+using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 

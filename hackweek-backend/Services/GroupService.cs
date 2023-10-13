@@ -23,7 +23,7 @@ namespace hackweek_backend.Services
                 .Include(g => g.Proposition).Include(g => g.GroupRatings)
                 .Select(g => new GroupDto(g)).ToListAsync();
         }
-        
+
         public async Task<GroupDto?> GetGroupById(int id)
         {
             var group = await _context.Groups

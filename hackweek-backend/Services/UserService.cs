@@ -20,7 +20,8 @@ namespace hackweek_backend.Services
             UserRoles.User,
         };
 
-        public UserService(DataContext context, IGlobalService globalService) {
+        public UserService(DataContext context, IGlobalService globalService)
+        {
             _context = context;
             _globalService = globalService;
         }
@@ -79,7 +80,7 @@ namespace hackweek_backend.Services
         {
             var user = await _context.Users.FindAsync(id) ?? throw new Exception($"Usuário não cadastrado! ({id})");
 
-            var password = Guid.NewGuid().ToString().Replace("-","");
+            var password = Guid.NewGuid().ToString().Replace("-", "");
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
             await _context.SaveChangesAsync();

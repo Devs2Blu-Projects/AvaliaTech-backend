@@ -1,7 +1,6 @@
 ﻿using hackweek_backend.DTOs;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hackweek_backend.Controllers
