@@ -63,7 +63,7 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupDto>> GetGroupsRanking(string role)
         {
-            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
 
             if (!currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
             if ((role != UserRoles.Admin) || (!currentEvent.IsPublic)) return Enumerable.Empty<GroupDto>();
@@ -81,7 +81,7 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupDto>> GetGroupsToRate(int idUser)
         {
-            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
 
             if (currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
 
@@ -95,7 +95,7 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupsByDateDTO>> GetAllEventGroupsByDate()
         {
-            EventModel? currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+            EventModel? currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
 
             DateTime startDate = currentEvent.StartDate.Date;
             DateTime endDate = currentEvent.EndDate.Date;
