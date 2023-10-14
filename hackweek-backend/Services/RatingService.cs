@@ -1,5 +1,5 @@
 ﻿using hackweek_backend.Data;
-using hackweek_backend.DTOs;
+using hackweek_backend.dtos;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 
@@ -17,6 +17,8 @@ namespace hackweek_backend.Services
 
         async public Task CreateRating(RatingDTO rating)
         {
+            if (rating.Grades == null) throw new Exception($"Critérios de avaliação não enviados!");
+
             var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
 
             if (currentEvent.IsClosed) throw new Exception("Evento encerrado!");
@@ -54,7 +56,7 @@ namespace hackweek_backend.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<RatingGetDTO> GetRatingById(int id)
+        public async Task<RatingGetDTO?> GetRatingById(int id)
         {
             var rating = await _context.Ratings
                 .Where(r => r.Id == id)
@@ -83,7 +85,7 @@ namespace hackweek_backend.Services
         public double CalculateFinalGradeByRating(int id)
         {
             // Pega a X avaliação
-            var rating = _context.Ratings.FirstOrDefault(r => r.Id == id);
+            var rating = _context.Ratings.FirstOrDefault(r => r.Id == id) ?? throw new InvalidOperationException("Avaliação não encontrada!");
 
             // Pega todos os ratingCriterion que tem a X avaliação, para pegar a nota 
             var ratingCriterion = _context.RatingCriteria.Where(r => r.Rating == rating).ToList();
@@ -110,7 +112,7 @@ namespace hackweek_backend.Services
                 if (grades[i] > 5.00000) grades[i] = 5.00000;
                 if (weights[i] <= 0 || grades[i] < 0) throw new Exception("ERRO! Peso ou nota abaixo de 0");
                 if (weights[i] == null) throw new Exception("ERRO! Peso ou nota abaixo de 0");
-                finalGrade += grades[i] * (int)weights[i];
+                finalGrade += grades[i] * (int)(weights[i] ?? 0);
             }
             rating.FinalGrade = finalGrade;
             return finalGrade;
@@ -139,6 +141,8 @@ namespace hackweek_backend.Services
         public void UpdateGroup(int idGrupo)
         {
             var group = _context.Groups.FirstOrDefault(g => g.Id == idGrupo);
+            if (group == null) return;
+
             group.FinalGrade = CalculateFinalGradeByGroup(idGrupo);
             CalculateCriterionGradeByGroup(group);
 
@@ -167,18 +171,21 @@ namespace hackweek_backend.Services
                     if (j.Grade > 5.00000) j.Grade = 5.00000;
                     double myGrade = j.Grade / ratingsByGroup.Count();
                     var criterion = _context.EventCriteria.FirstOrDefault(pc => pc.CriterionId == j.CriterionId);
-                    var gr = _context.GroupRatings.FirstOrDefault(gp => gp.EventCriterionId == criterion.Id);
-
-                    if (gr == null)
+                    if (criterion != null)
                     {
-                        gr = new GroupRatingModel()
+                        var gr = _context.GroupRatings.FirstOrDefault(gp => gp.EventCriterionId == criterion.Id);
+
+                        if (gr == null)
                         {
-                            Grade = myGrade,
-                            EventCriterionId = criterion.Id,
-                            GroupId = group.Id
-                        };
+                            gr = new GroupRatingModel()
+                            {
+                                Grade = myGrade,
+                                EventCriterionId = criterion.Id,
+                                GroupId = group.Id
+                            };
+                        }
+                        else gr.Grade += myGrade;
                     }
-                    else gr.Grade += myGrade;
                 }
             }
 
@@ -186,7 +193,7 @@ namespace hackweek_backend.Services
         }
 
 
-        async public Task<List<RatingGetDTO>> GetAllRatings()
+        async public Task<List<RatingGetDTO>?> GetAllRatings()
         {
             var ratings = await _context.Ratings.Select(r => new
             {
@@ -215,7 +222,7 @@ namespace hackweek_backend.Services
             return retorno;
         }
 
-        async public Task<List<RatingGetDTO>> GetRatingsByGroup(int idGroup)
+        async public Task<List<RatingGetDTO>?> GetRatingsByGroup(int idGroup)
         {
             List<RatingModel> ratings = await _context.Ratings.Where(r => r.GroupId == idGroup).ToListAsync();
             if (ratings.Count == 0 || ratings == null) return null;

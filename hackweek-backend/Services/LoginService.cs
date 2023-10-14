@@ -1,5 +1,5 @@
 ﻿using hackweek_backend.Data;
-using hackweek_backend.DTOs;
+using hackweek_backend.dtos;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;

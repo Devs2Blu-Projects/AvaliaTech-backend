@@ -1,4 +1,5 @@
 ﻿using hackweek_backend.Data;
+using hackweek_backend.dtos;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 
@@ -9,9 +10,15 @@ namespace hackweek_backend.Services
         private readonly DataContext _context;
 
         public CriterionService(DataContext context) { _context = context; }
-        async public Task CreateCriterion(CriterionModel criterio)
+        async public Task CreateCriterion(CriterionDTO request)
         {
-            _context.Criteria.Add(criterio);
+            var model = new CriterionModel
+            {
+                Name = request.Name,
+                Description = request.Description,
+                Weight = request.Weight,
+            };
+            await _context.Criteria.AddAsync(model);
             await _context.SaveChangesAsync();
         }
 
@@ -31,7 +38,7 @@ namespace hackweek_backend.Services
             return await _context.Criteria.ToListAsync();
         }
 
-        async public Task<IEnumerable<CriterionModel>> GetCriteriaByEvent(int idEvent)
+        async public Task<IEnumerable<CriterionModel?>?> GetCriteriaByEvent(int idEvent)
         {
             var criteria = await _context.EventCriteria.Where(c => c.EventId == idEvent).Select(c => c.Criterion).ToListAsync();
             return (criteria == null || criteria.Count == 0) ? null : criteria;
@@ -42,12 +49,16 @@ namespace hackweek_backend.Services
             return await _context.Criteria.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        async public Task UpdateCriterion(int id, CriterionModel request)
+        async public Task UpdateCriterion(int id, CriterionDTO request)
         {
-            var criteria = await _context.Criteria.FirstOrDefaultAsync(c => c.Id == id);
-            if (criteria == null || id != request.Id) throw new ArgumentException("IDs diferentes!");
-            criteria.Description = request.Description;
-            criteria.Name = request.Name;
+            if (request.Id != id) throw new Exception("Id diferente do critério informado!");
+
+            var model = await _context.Criteria.FindAsync(id) ?? throw new Exception($"Critério não encontrado! ({request.Id})");
+
+            model.Name = request.Name;
+            model.Description = request.Description;
+            model.Weight = request.Weight;
+
             await _context.SaveChangesAsync();
 
         }

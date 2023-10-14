@@ -1,4 +1,4 @@
-namespace hackweek_backend.DTOs
+namespace hackweek_backend.dtos
 {
     public class UserDtoUpdate
     {
