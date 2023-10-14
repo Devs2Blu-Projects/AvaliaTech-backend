@@ -81,5 +81,12 @@ namespace hackweek_backend.Controllers
 
             return Ok(await _service.GetGroupsToRate(idUser));
         }
+
+        [HttpGet("placeholder")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult<IEnumerable<GroupsByDateDTO>>> GetAllEventGroupsByDate()
+        {
+            return Ok(await _service.GetAllEventGroupsByDate());
+        }
     }
 }

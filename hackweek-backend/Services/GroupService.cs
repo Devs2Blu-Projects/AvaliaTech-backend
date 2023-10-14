@@ -1,6 +1,7 @@
 using hackweek_backend.Data;
 using hackweek_backend.dtos;
 using hackweek_backend.DTOs;
+using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using System.Data;
 
@@ -88,6 +89,36 @@ namespace hackweek_backend.Services
                 .Include(g => g.Proposition)
                 .Where(g => (!ratedGroupIdList.Contains(g.Id)) && (DateTime.Now == currentEvent.StartDate.AddDays(g.DateOffset)))
                 .Select(g => new GroupDto(g)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<GroupsByDateDTO>> GetAllEventGroupsByDate()
+        {
+            EventModel currentEvent = await _globalService.GetCurrentEvent();
+            DateTime startDate = currentEvent.StartDate.Date;
+            DateTime endDate = currentEvent.EndDate.Date;
+
+            List<GroupsByDateDTO> groupsByDate = new List<GroupsByDateDTO>();
+
+            for (DateTime dt = startDate; dt <= endDate; dt.AddDays(1))
+            {
+                groupsByDate.Add(new GroupsByDateDTO
+                {
+                    Date = dt,
+                });
+            }
+
+            var groups = await _context.Groups
+                .Include(g => g.Proposition)
+                .Where(g => g.EventId == currentEvent.Id)
+                .OrderBy(g => g.DateOffset)
+                .ToListAsync();
+
+            foreach (var group in groups)
+            {
+                groupsByDate[(int)group.DateOffset].Groups.Add(new GroupDto(group));
+            }
+
+            return groupsByDate;
         }
     }
 }
