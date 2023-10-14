@@ -1,3 +1,4 @@
+using hackweek_backend.dtos;
 using hackweek_backend.Models;
 
 namespace hackweek_backend.Services.Interfaces
@@ -6,10 +7,10 @@ namespace hackweek_backend.Services.Interfaces
     {
         Task<IEnumerable<CriterionModel>> GetCriteria();
         Task<CriterionModel?> GetCriterionById(int id);
-        Task CreateCriterion(CriterionModel criterio);
+        Task CreateCriterion(CriterionDTO request);
         Task DeleteCriterion(int id);
-        Task UpdateCriterion(int id, CriterionModel request);
+        Task UpdateCriterion(int id, CriterionDTO request);
 
-        Task<IEnumerable<CriterionModel>> GetCriteriaByEvent(int idEvent);
+        Task<IEnumerable<CriterionModel?>?> GetCriteriaByEvent(int idEvent);
     }
 }

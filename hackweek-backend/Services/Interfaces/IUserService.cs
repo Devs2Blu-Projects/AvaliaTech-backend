@@ -1,4 +1,4 @@
-using hackweek_backend.DTOs;
+using hackweek_backend.dtos;
 
 namespace hackweek_backend.Services.Interfaces
 {

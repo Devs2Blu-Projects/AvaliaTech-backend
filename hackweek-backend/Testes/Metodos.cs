@@ -34,7 +34,7 @@ namespace hackweek_backend.Testes
             {
                 if (weights[i] <= 0 || grades[i] < 0) throw new Exception("ERRO! Peso ou nota abaixo de 0");
                 if (weights[i] == null) throw new Exception("ERRO! Peso ou nota abaixo de 0");
-                finalGrade += grades[i] * (int)weights[i];
+                finalGrade += grades[i] * (int)(weights[i] ?? 0);
             }
 
             return finalGrade;
