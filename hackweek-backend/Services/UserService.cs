@@ -54,13 +54,14 @@ namespace hackweek_backend.Services
             await _context.Users.AddAsync(userModel);
             await _context.SaveChangesAsync();
 
-            if (request.Role == UserRoles.Group) await InternalCreateGroup(userModel.Id, eventId);
+            if (request.Role == UserRoles.Group) await InternalCreateGroup(userModel.Id, userModel.Name, eventId);
         }
 
-        private async Task InternalCreateGroup(int userId, int eventId)
+        private async Task InternalCreateGroup(int userId, string projectName, int eventId)
         {
             await _context.Groups.AddAsync(new GroupModel
             {
+                ProjectName = projectName,
                 UserId = userId,
                 Position = (await _context.Groups.AnyAsync()) ? await _context.Groups.MaxAsync(g => g.Position) + 1 : 1,
                 EventId = eventId,
