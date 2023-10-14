@@ -95,7 +95,8 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupsByDateDTO>> GetAllEventGroupsByDate()
         {
-            EventModel currentEvent = await _globalService.GetCurrentEvent();
+            EventModel? currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+
             DateTime startDate = currentEvent.StartDate.Date;
             DateTime endDate = currentEvent.EndDate.Date;
 
