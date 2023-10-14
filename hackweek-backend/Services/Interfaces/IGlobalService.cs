@@ -7,5 +7,8 @@ namespace hackweek_backend.Services.Interfaces
         Task<GlobalModel> GetGlobal();
         Task<EventModel?> GetCurrentEvent();
         Task SetCurrentEvent(int eventId);
+
+        Task SetClosedCurrentEvent();
+        Task SetPublicCurrentEvent();
     }
 }

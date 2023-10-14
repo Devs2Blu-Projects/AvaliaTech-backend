@@ -55,7 +55,7 @@ namespace Teste
 
             //Assert
 
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace Teste
 
             //Assert
 
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [Test]
@@ -147,7 +147,7 @@ namespace Teste
 
             //Assert
 
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [Test]
@@ -193,7 +193,7 @@ namespace Teste
 
             //Assert
 
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [Test]
@@ -239,7 +239,7 @@ namespace Teste
 
             //Assert
 
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
         [Test]
         public void CalculateFinalGradeByAvaliador_notasIguaisImpares_50()
@@ -284,7 +284,7 @@ namespace Teste
 
             //Assert
 
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [Test]
@@ -330,7 +330,7 @@ namespace Teste
 
             //Assert
 
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [Test]
@@ -376,7 +376,7 @@ namespace Teste
 
             //Assert
 
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [Test]
@@ -422,7 +422,7 @@ namespace Teste
 
             //Assert
 
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [Test]

@@ -1,4 +1,5 @@
-﻿using hackweek_backend.Models;
+﻿using hackweek_backend.dtos;
+using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace hackweek_backend.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> CreateCriterion(CriterionModel request)
+        public async Task<IActionResult> CreateCriterion(CriterionDTO request)
         {
             try
             {
@@ -92,7 +93,7 @@ namespace hackweek_backend.Controllers
 
         [HttpPut("Id")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> UpdateCriterion(int Id, CriterionModel request)
+        public async Task<IActionResult> UpdateCriterion(int Id, CriterionDTO request)
         {
             try
             {

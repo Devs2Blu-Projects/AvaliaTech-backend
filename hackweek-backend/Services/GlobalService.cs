@@ -29,5 +29,21 @@ namespace hackweek_backend.Services
 
             await _context.SaveChangesAsync();
         }
+
+        async public Task SetClosedCurrentEvent()
+        {
+            var currentEvent = await GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+
+            currentEvent.IsClosed = true;
+            await _context.SaveChangesAsync();
+        }
+
+        async public Task SetPublicCurrentEvent()
+        {
+            var currentEvent = await GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+
+            currentEvent.IsPublic = true;
+            await _context.SaveChangesAsync();
+        }
     }
 }
