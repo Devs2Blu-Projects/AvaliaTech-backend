@@ -62,11 +62,12 @@ namespace hackweek_backend.Services
             return new GroupDto(group);
         }
 
-        public async Task<IEnumerable<GroupDto>> GetGroupsRanking()
+        public async Task<IEnumerable<GroupDto>> GetGroupsRanking(string role)
         {
             var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
 
             if (!currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
+            if ((role != UserRoles.Admin) || (!currentEvent.IsPublic)) return Enumerable.Empty<GroupDto>();
 
             var propositionIds = await _context.Propositions
                 .Where(p => p.EventId == currentEvent.Id)
@@ -82,6 +83,8 @@ namespace hackweek_backend.Services
         public async Task<IEnumerable<GroupDto>> GetGroupsToRate(int idUser)
         {
             var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+
+            if (currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
 
             var ratedGroupIdList = await _context.Ratings.Where(r => r.UserId == idUser).Select(r => r.GroupId).ToListAsync();
 

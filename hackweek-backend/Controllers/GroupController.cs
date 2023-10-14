@@ -70,7 +70,7 @@ namespace hackweek_backend.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsRanking()
         {
-            return Ok(await _service.GetGroupsRanking());
+            return Ok(await _service.GetGroupsRanking(_login.GetUserRole(HttpContext)));
         }
 
         [HttpGet("rate/{idUser}")]
