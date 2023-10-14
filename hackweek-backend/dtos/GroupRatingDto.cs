@@ -5,9 +5,9 @@ namespace hackweek_backend.DTOs
     public class GroupRatingDto
     {
         public int Id { get; set; }
-        public uint Grade { get; set; }
+        public double Grade { get; set; }
         public int GroupId { get; set; }
-        public int PropositionCriterionId { get; set; }
+        public int EventCriterionId { get; set; }
 
         public GroupRatingDto(GroupRatingModel? groupRating)
         {
@@ -16,7 +16,7 @@ namespace hackweek_backend.DTOs
                 Id = groupRating.Id;
                 Grade = groupRating.Grade;
                 GroupId = groupRating.GroupId;
-                PropositionCriterionId = groupRating.PropositionCriterionId;
+                EventCriterionId = groupRating.EventCriterionId;
             }
         }
     }

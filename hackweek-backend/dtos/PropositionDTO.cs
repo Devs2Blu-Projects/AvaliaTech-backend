@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public List<PropositionCriterionDTO>? PropositionCriteria { get; set; }
+        public int EventId { get; set; }
+        public List<EventCriterionDTO>? EventCriteria { get; set; }
     }
 }

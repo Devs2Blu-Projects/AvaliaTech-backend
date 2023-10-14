@@ -13,11 +13,13 @@ namespace hackweek_backend.Services
     {
         private readonly DataContext _context; // TODO: Inject IUserService instead
         private readonly IConfiguration _config;
+        private readonly IGlobalService _globalService;
 
-        public LoginService(DataContext context, IConfiguration configuration)
+        public LoginService(DataContext context, IConfiguration configuration, IGlobalService globalService)
         {
             _context = context;
             _config = configuration;
+            _globalService = globalService;
         }
 
         public async Task<string> Login(LoginDto request)
@@ -63,7 +65,7 @@ namespace hackweek_backend.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
-            var claims= new []
+            var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
@@ -84,7 +86,9 @@ namespace hackweek_backend.Services
 
         private async Task<UserModel?> GetUserWithPassword(LoginDto request) // TODO: Move to IUserService
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            var currentId = (await _globalService.GetGlobal()).CurrentEventId;
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => (u.Username == request.Username) && ((u.EventId ?? currentId) == currentId));
 
             return user;
         }

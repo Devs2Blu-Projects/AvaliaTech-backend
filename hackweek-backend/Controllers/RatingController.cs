@@ -1,10 +1,7 @@
-﻿using hackweek_backend.dtos;
-using hackweek_backend.DTOs;
+﻿using hackweek_backend.DTOs;
 using hackweek_backend.Models;
-using hackweek_backend.Services;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hackweek_backend.Controllers
@@ -40,7 +37,7 @@ namespace hackweek_backend.Controllers
         {
             try
             {
-                await _service.DeleteRatingByAvaliadorById(id);
+                await _service.DeleteRating(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -51,11 +48,11 @@ namespace hackweek_backend.Controllers
 
         [HttpGet("avaliador/{id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetRatingByIdByAvaliador(int id) //TODO: Check method name
+        public async Task<IActionResult> GetRatingById(int id) //TODO: Check method name
         {
             try
             {
-                var result = await _service.GetRatingByIdByAvaliador(id);
+                var result = await _service.GetRatingById(id);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -66,11 +63,11 @@ namespace hackweek_backend.Controllers
 
         [HttpGet]
         [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.User}")]
-        public async Task<IActionResult> GetAllRatingsByAvaliador() 
+        public async Task<IActionResult> GetAllRatingsByAvaliador()
         {
             try
             {
-                var result = await _service.GetAllRatingsByAvaliador(); //TODO: check parameter
+                var result = await _service.GetAllRatings(); //TODO: check parameter
                 return Ok(result);
             }
             catch (Exception ex)
@@ -85,24 +82,10 @@ namespace hackweek_backend.Controllers
         {
             try
             {
-                var result = await _service.GetAllRatingsByGroup(id);
+                var result = await _service.GetRatingsByGroup(id);
                 return Ok(result);
             }
-            catch(Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-
-        [HttpPost("grade")]
-        public async Task<IActionResult> PostGrade(GradeDTO grade)
-        {
-            try
-            {
-                await _service.CreateGrade(grade);
-                return NoContent();
-            }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e);
             }

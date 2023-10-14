@@ -1,11 +1,11 @@
 global using Microsoft.EntityFrameworkCore;
 using hackweek_backend.Data;
-using System.Text.Json.Serialization;
-using hackweek_backend.Services.Interfaces;
 using hackweek_backend.Services;
+using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +25,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICriterionService, CriterionService>();
 builder.Services.AddScoped<IPropositionService, PropositionService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IGlobalService, GlobalService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 
