@@ -102,7 +102,7 @@ namespace hackweek_backend.Services
 
             List<GroupsByDateDTO> groupsByDate = new List<GroupsByDateDTO>();
 
-            for (DateTime dt = startDate; dt <= endDate; dt.AddDays(1))
+            for (DateTime dt = startDate.Date; dt.Date <= endDate.Date; dt=dt.Date.AddDays(1))
             {
                 groupsByDate.Add(new GroupsByDateDTO
                 {
