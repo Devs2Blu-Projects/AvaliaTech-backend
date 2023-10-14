@@ -60,6 +60,14 @@ namespace hackweek_backend.Services
             return (user.Role == UserRoles.Admin) || (user.Id == idUser);
         }
 
+        public string GetUserRole(HttpContext httpContext)
+        {
+            var user = GetCurrentUser(httpContext);
+            if (user == null) return "";
+
+            return user.Role;
+        }
+
         private string GenerateToken(UserModel user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
