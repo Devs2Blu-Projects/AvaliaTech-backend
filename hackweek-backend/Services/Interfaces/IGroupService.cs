@@ -10,6 +10,6 @@ namespace hackweek_backend.Services.Interfaces
 
         Task<GroupDto?> GetGroupByUser(int idUser);
         Task<IEnumerable<GroupDto>> GetGroupsRanking(string role);
-        Task<IEnumerable<GroupDto>> GetGroupsToRate(int idUser);
+        Task<IEnumerable<GroupDtoWithoutGrade>> GetGroupsToRate(int idUser);
     }
 }
