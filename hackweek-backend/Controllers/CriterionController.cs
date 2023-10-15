@@ -18,12 +18,12 @@ namespace hackweek_backend.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> CreateCriterion(CriterionDtoUpdate request)
+        public async Task<IActionResult> CreateCriterion(CriterionDtoInsert request)
         {
             try
             {
                 await _service.CreateCriterion(request);
-                return CreatedAtAction(nameof(GetCriterionById), new { id = request.Id }, request);
+                return Ok("Critério criado com sucesso!");
             }
             catch (Exception e)
             {
@@ -53,7 +53,7 @@ namespace hackweek_backend.Controllers
             try
             {
                 await _service.DeleteCriterion(Id);
-                return NoContent();
+                return Ok("Critério excluído com sucesso!");
             }
             catch (Exception e)
             {
@@ -113,7 +113,7 @@ namespace hackweek_backend.Controllers
             try
             {
                 await _service.UpdateCriterion(Id, request);
-                return NoContent();
+                return Ok("Critério atualizado com sucesso!");
             }
             catch (Exception e)
             {
