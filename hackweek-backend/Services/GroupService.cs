@@ -63,7 +63,7 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupDto>> GetGroupsRanking(string role)
         {
-            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
 
             if (!currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
             if ((role != UserRoles.Admin) && (!currentEvent.IsPublic)) return Enumerable.Empty<GroupDto>();
@@ -81,7 +81,7 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupDtoWithoutGrade>> GetGroupsToRate(int idUser)
         {
-            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
 
             if (currentEvent.IsClosed) return Enumerable.Empty<GroupDtoWithoutGrade>();
 
@@ -91,6 +91,37 @@ namespace hackweek_backend.Services
                 .Include(g => g.Proposition)
                 .Where(g => (!ratedGroupIdList.Contains(g.Id)) && (DateTime.Now == currentEvent.StartDate.AddDays(g.DateOffset)))
                 .Select(g => new GroupDtoWithoutGrade(g)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<GroupsByDateDTO>> GetAllEventGroupsByDate()
+        {
+            EventModel? currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
+
+            DateTime startDate = currentEvent.StartDate.Date;
+            DateTime endDate = currentEvent.EndDate.Date;
+
+            List<GroupsByDateDTO> groupsByDate = new List<GroupsByDateDTO>();
+
+            for (DateTime dt = startDate.Date; dt.Date <= endDate.Date; dt=dt.Date.AddDays(1))
+            {
+                groupsByDate.Add(new GroupsByDateDTO
+                {
+                    Date = dt,
+                });
+            }
+
+            var groups = await _context.Groups
+                .Include(g => g.Proposition)
+                .Where(g => g.EventId == currentEvent.Id)
+                .OrderBy(g => g.DateOffset)
+                .ToListAsync();
+
+            foreach (var group in groups)
+            {
+                groupsByDate[(int)group.DateOffset].Groups.Add(new GroupDto(group));
+            }
+
+            return groupsByDate;
         }
     }
 }
