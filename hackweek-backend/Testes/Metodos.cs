@@ -1,5 +1,4 @@
 ﻿using hackweek_backend.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace hackweek_backend.Testes
 {
@@ -19,11 +18,11 @@ namespace hackweek_backend.Testes
             //pego o peso de cada criterio
             List<uint?> weights = new List<uint?>();
 
-            foreach (var r in ratingCriterion)
+            /*foreach (var r in ratingCriterion)
             {
                 uint? weight = Banco.weights.FirstOrDefault(p => p.Criterion == r.Criterion)?.Weight;
                 if (weight != null) weights.Add(weight);
-            }
+            }*/
 
             if (weights.Count != grades.Count) throw new InvalidOperationException("ERRO! Peso e notas não tão organizadas!");
 
@@ -35,7 +34,7 @@ namespace hackweek_backend.Testes
             {
                 if (weights[i] <= 0 || grades[i] < 0) throw new Exception("ERRO! Peso ou nota abaixo de 0");
                 if (weights[i] == null) throw new Exception("ERRO! Peso ou nota abaixo de 0");
-                finalGrade += grades[i] * (int)weights[i];
+                finalGrade += grades[i] * (int)(weights[i] ?? 0);
             }
 
             return finalGrade;
@@ -55,7 +54,7 @@ namespace hackweek_backend.Testes
             // Soma a nota de todas as avaliações desse grupo
             foreach (var i in ratingsGroup)
             {
-               // finalGrade += CalculateFinalGradeByAvaliador(i.Id);
+                // finalGrade += CalculateFinalGradeByAvaliador(i.Id);
             }
 
             // Divide a nota final pelo o numero de avaliacoes

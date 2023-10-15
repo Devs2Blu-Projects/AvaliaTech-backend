@@ -2,7 +2,7 @@
 
 namespace hackweek_backend.dtos
 {
-    public class GroupDto
+    public class GroupDtoWithoutGrade
     {
         public int Id { get; set; }
         public string Team { get; set; } = string.Empty;
@@ -11,15 +11,12 @@ namespace hackweek_backend.dtos
         public PropositionModel? Proposition { get; set; }
         public string ProjectName { get; set; } = string.Empty;
         public string ProjectDescription { get; set; } = string.Empty;
-        public double FinalGrade { get; set; }
         public uint Position { get; set; }
         public uint DateOffset { get; set; }
-        public int UserId { get; set; }
-        public List<GroupRatingDto>? GroupRatings { get; set; }
 
-        public GroupDto() { }
+        public GroupDtoWithoutGrade() { }
 
-        public GroupDto(GroupModel? group)
+        public GroupDtoWithoutGrade(GroupModel? group)
         {
             if (group != null)
             {
@@ -30,11 +27,8 @@ namespace hackweek_backend.dtos
                 Proposition = group.Proposition;
                 ProjectName = group.ProjectName;
                 ProjectDescription = group.ProjectDescription;
-                FinalGrade = group.FinalGrade;
                 Position = group.Position;
                 DateOffset = group.DateOffset;
-                UserId = group.UserId;
-                GroupRatings = group.GroupRatings?.Select(gr => new GroupRatingDto(gr)).ToList();
             }
         }
     }

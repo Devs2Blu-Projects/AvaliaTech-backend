@@ -1,13 +1,12 @@
 ﻿using hackweek_backend.Models;
 
-namespace hackweek_backend.DTOs
+namespace hackweek_backend.dtos
 {
     public class GroupRatingDto
     {
         public int Id { get; set; }
         public double Grade { get; set; }
         public int GroupId { get; set; }
-        public int PropositionCriterionId { get; set; }
 
         public GroupRatingDto(GroupRatingModel? groupRating)
         {
@@ -16,7 +15,6 @@ namespace hackweek_backend.DTOs
                 Id = groupRating.Id;
                 Grade = groupRating.Grade;
                 GroupId = groupRating.GroupId;
-                PropositionCriterionId = groupRating.PropositionCriterionId;
             }
         }
     }

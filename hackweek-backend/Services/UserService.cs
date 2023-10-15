@@ -1,5 +1,5 @@
 using hackweek_backend.Data;
-using hackweek_backend.DTOs;
+using hackweek_backend.dtos;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using System.Data;
@@ -20,7 +20,8 @@ namespace hackweek_backend.Services
             UserRoles.User,
         };
 
-        public UserService(DataContext context, IGlobalService globalService) {
+        public UserService(DataContext context, IGlobalService globalService)
+        {
             _context = context;
             _globalService = globalService;
         }
@@ -53,13 +54,14 @@ namespace hackweek_backend.Services
             await _context.Users.AddAsync(userModel);
             await _context.SaveChangesAsync();
 
-            if (request.Role == UserRoles.Group) await InternalCreateGroup(userModel.Id, eventId);
+            if (request.Role == UserRoles.Group) await InternalCreateGroup(userModel.Id, userModel.Username, eventId);
         }
 
-        private async Task InternalCreateGroup(int userId, int eventId)
+        private async Task InternalCreateGroup(int userId, string projectName, int eventId)
         {
             await _context.Groups.AddAsync(new GroupModel
             {
+                ProjectName = projectName,
                 UserId = userId,
                 Position = (await _context.Groups.AnyAsync()) ? await _context.Groups.MaxAsync(g => g.Position) + 1 : 1,
                 EventId = eventId,
@@ -79,7 +81,7 @@ namespace hackweek_backend.Services
         {
             var user = await _context.Users.FindAsync(id) ?? throw new Exception($"Usuário não cadastrado! ({id})");
 
-            var password = Guid.NewGuid().ToString().Replace("-","");
+            var password = Guid.NewGuid().ToString().Replace("-", "");
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
             await _context.SaveChangesAsync();

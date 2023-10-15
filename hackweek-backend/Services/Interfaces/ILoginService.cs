@@ -1,4 +1,4 @@
-using hackweek_backend.DTOs;
+using hackweek_backend.dtos;
 
 namespace hackweek_backend.Services.Interfaces
 {
@@ -6,5 +6,6 @@ namespace hackweek_backend.Services.Interfaces
     {
         Task<string> Login(LoginDto request);
         bool HasAccessToUser(HttpContext httpContext, int idUser);
+        string GetUserRole(HttpContext httpContext);
     }
 }

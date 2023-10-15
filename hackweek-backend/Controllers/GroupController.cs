@@ -1,9 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using hackweek_backend.Services.Interfaces;
 using hackweek_backend.dtos;
-using hackweek_backend.DTOs;
-using Microsoft.AspNetCore.Authorization;
 using hackweek_backend.Models;
+using hackweek_backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace hackweek_backend.Controllers
 {
@@ -32,7 +31,7 @@ namespace hackweek_backend.Controllers
         public async Task<ActionResult<GroupDto?>> GetGroupById(int id)
         {
             var group = await _service.GetGroupById(id);
-            if (group == null) return NotFound("Grupo não encontrado!");
+            if (group == null) return NotFound("Grupo nï¿½o encontrado!");
 
             return Ok(group);
         }
@@ -46,7 +45,7 @@ namespace hackweek_backend.Controllers
             try
             {
                 await _service.UpdateGroup(id, request);
-                return Ok("Usuário atualizado com sucesso!");
+                return Ok("Usuï¿½rio atualizado com sucesso!");
             }
             catch (Exception e)
             {
@@ -61,7 +60,7 @@ namespace hackweek_backend.Controllers
             if (!_login.HasAccessToUser(HttpContext, idUser)) return Unauthorized();
 
             var group = await _service.GetGroupByUser(idUser);
-            if (group == null) return NotFound("Grupo não encontrado!");
+            if (group == null) return NotFound("Grupo nï¿½o encontrado!");
 
             return Ok(group);
         }
@@ -70,16 +69,23 @@ namespace hackweek_backend.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsRanking()
         {
-            return Ok(await _service.GetGroupsRanking());
+            return Ok(await _service.GetGroupsRanking(_login.GetUserRole(HttpContext)));
         }
 
         [HttpGet("rate/{idUser}")]
         [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.User}")]
-        public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsToRate(int idUser)
+        public async Task<ActionResult<IEnumerable<GroupDtoWithoutGrade>>> GetGroupsToRate(int idUser)
         {
             if (!_login.HasAccessToUser(HttpContext, idUser)) return Unauthorized();
 
             return Ok(await _service.GetGroupsToRate(idUser));
+        }
+
+        [HttpGet("groupsByDate")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult<IEnumerable<GroupsByDateDTO>>> GetAllEventGroupsByDate()
+        {
+            return Ok(await _service.GetAllEventGroupsByDate());
         }
     }
 }

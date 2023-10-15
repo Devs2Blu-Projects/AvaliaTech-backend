@@ -1,5 +1,5 @@
 ﻿using hackweek_backend.Data;
-using hackweek_backend.DTOs;
+using hackweek_backend.dtos;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
@@ -58,6 +58,14 @@ namespace hackweek_backend.Services
             if (user == null) return false;
 
             return (user.Role == UserRoles.Admin) || (user.Id == idUser);
+        }
+
+        public string GetUserRole(HttpContext httpContext)
+        {
+            var user = GetCurrentUser(httpContext);
+            if (user == null) return "";
+
+            return user.Role;
         }
 
         private string GenerateToken(UserModel user)

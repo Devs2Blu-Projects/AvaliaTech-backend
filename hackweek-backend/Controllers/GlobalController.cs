@@ -38,5 +38,34 @@ namespace hackweek_backend.Controllers
             }
         }
 
+        [HttpPut("currentEvent/close")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult> SetClosedCurrentEvent()
+        {
+            try
+            {
+                await _service.SetClosedCurrentEvent();
+                return Ok("Evento ativo encerrado com sucesso!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut("currentEvent/public")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult> SetPublicCurrentEvent()
+        {
+            try
+            {
+                await _service.SetPublicCurrentEvent();
+                return Ok("Evento ativo disponibilizado com sucesso!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

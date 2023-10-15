@@ -1,6 +1,4 @@
 using hackweek_backend.dtos;
-using hackweek_backend.DTOs;
-using hackweek_backend.Models;
 
 namespace hackweek_backend.Services.Interfaces
 {
@@ -11,7 +9,8 @@ namespace hackweek_backend.Services.Interfaces
         Task UpdateGroup(int id, GroupDtoUpdate request);
 
         Task<GroupDto?> GetGroupByUser(int idUser);
-        Task<IEnumerable<GroupDto>> GetGroupsRanking();
-        Task<IEnumerable<GroupDto>> GetGroupsToRate(int idUser);
+        Task<IEnumerable<GroupDto>> GetGroupsRanking(string role);
+        Task<IEnumerable<GroupDtoWithoutGrade>> GetGroupsToRate(int idUser);
+        Task<IEnumerable<GroupsByDateDTO>> GetAllEventGroupsByDate();
     }
 }

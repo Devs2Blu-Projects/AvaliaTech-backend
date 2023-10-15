@@ -5,8 +5,8 @@
         public int Id { get; set; }
         public  double Grade { get; set; }
         public int GroupId { get; set; }
-        public int PropositionCriterionId { get; set; }
+        public int CriterionId { get; set; }
         public GroupModel? Group { get; set; }
-        public PropositionCriterionModel? PropositionCriterion { get; set; }
+        public CriterionModel? Criterion { get; set; }
     }
 }
