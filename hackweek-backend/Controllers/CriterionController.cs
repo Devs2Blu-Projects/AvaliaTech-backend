@@ -76,13 +76,28 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpGet("proposition/{IdProposition}")]
+        [HttpGet("event/{IdEvent}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetCriteriaByEvent(int IdEvent)
         {
             try
             {
-                var result = await _service.GetCriteriaByEvent(IdEvent);
+                var result = await _service.GetCriteriaByEventId(IdEvent);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("event")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> GetCriteriaByCurrentEvent()
+        {
+            try
+            {
+                var result = await _service.GetCriteriaByCurrentEvent();
                 return Ok(result);
             }
             catch (Exception e)

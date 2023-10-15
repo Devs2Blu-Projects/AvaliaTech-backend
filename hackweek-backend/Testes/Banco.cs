@@ -71,7 +71,7 @@ namespace hackweek_backend.Testes
             },
         };
 
-        public static List<EventCriterionModel> weights = new List<EventCriterionModel>
+       /* public static List<EventCriterionModel> weights = new List<EventCriterionModel>
         {
             new EventCriterionModel()
             {
@@ -97,7 +97,7 @@ namespace hackweek_backend.Testes
                 CriterionId = 3,
                 Criterion = criteria[2]
             }
-        };
+        };*/
 
         public static List<RatingModel> ratings = new List<RatingModel>
         {
