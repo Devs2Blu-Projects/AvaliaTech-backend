@@ -91,7 +91,7 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpPut("Id")]
+        [HttpPut("{Id}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateCriterion(int Id, CriterionDTO request)
         {
