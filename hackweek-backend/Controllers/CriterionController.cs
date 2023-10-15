@@ -32,7 +32,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("{Id}")]
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize]
         public async Task<IActionResult> GetCriterionById(int Id)
         {
             try
@@ -62,7 +62,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize]
         public async Task<IActionResult> GetCriteria()
         {
             try
@@ -77,7 +77,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("event/{IdEvent}")]
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize]
         public async Task<IActionResult> GetCriteriaByEvent(int IdEvent)
         {
             try
@@ -92,7 +92,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("event")]
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize]
         public async Task<IActionResult> GetCriteriaByCurrentEvent()
         {
             try
