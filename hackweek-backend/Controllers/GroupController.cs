@@ -74,7 +74,7 @@ namespace hackweek_backend.Controllers
 
         [HttpGet("rate/{idUser}")]
         [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.User}")]
-        public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsToRate(int idUser)
+        public async Task<ActionResult<IEnumerable<GroupDtoWithoutGrade>>> GetGroupsToRate(int idUser)
         {
             if (!_login.HasAccessToUser(HttpContext, idUser)) return Unauthorized();
 

@@ -66,7 +66,7 @@ namespace hackweek_backend.Services
             var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
 
             if (!currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
-            if ((role != UserRoles.Admin) || (!currentEvent.IsPublic)) return Enumerable.Empty<GroupDto>();
+            if ((role != UserRoles.Admin) && (!currentEvent.IsPublic)) return Enumerable.Empty<GroupDto>();
 
             var propositionIds = await _context.Propositions
                 .Where(p => p.EventId == currentEvent.Id)
@@ -79,18 +79,18 @@ namespace hackweek_backend.Services
                 .Select(g => new GroupDto(g)).ToListAsync();
         }
 
-        public async Task<IEnumerable<GroupDto>> GetGroupsToRate(int idUser)
+        public async Task<IEnumerable<GroupDtoWithoutGrade>> GetGroupsToRate(int idUser)
         {
             var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
 
-            if (currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
+            if (currentEvent.IsClosed) return Enumerable.Empty<GroupDtoWithoutGrade>();
 
             var ratedGroupIdList = await _context.Ratings.Where(r => r.UserId == idUser).Select(r => r.GroupId).ToListAsync();
 
             return await _context.Groups
                 .Include(g => g.Proposition)
                 .Where(g => (!ratedGroupIdList.Contains(g.Id)) && (DateTime.Now == currentEvent.StartDate.AddDays(g.DateOffset)))
-                .Select(g => new GroupDto(g)).ToListAsync();
+                .Select(g => new GroupDtoWithoutGrade(g)).ToListAsync();
         }
 
         public async Task<IEnumerable<GroupsByDateDTO>> GetAllEventGroupsByDate()
