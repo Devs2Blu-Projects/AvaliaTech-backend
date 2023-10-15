@@ -60,7 +60,7 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpPut("Id")]
+        [HttpPut("{Id}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<string>> UpdateEvent(int Id, EventModel request)
         {
