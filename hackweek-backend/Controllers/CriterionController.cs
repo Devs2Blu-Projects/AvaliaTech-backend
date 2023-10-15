@@ -18,7 +18,7 @@ namespace hackweek_backend.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> CreateCriterion(CriterionDTO request)
+        public async Task<IActionResult> CreateCriterion(CriterionDtoUpdate request)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace hackweek_backend.Controllers
 
         [HttpPut("{Id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> UpdateCriterion(int Id, CriterionDTO request)
+        public async Task<IActionResult> UpdateCriterion(int Id, CriterionDtoUpdate request)
         {
             try
             {
