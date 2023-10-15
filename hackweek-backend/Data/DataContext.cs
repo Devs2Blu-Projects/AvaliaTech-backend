@@ -15,7 +15,6 @@ namespace hackweek_backend.Data
         public DbSet<GlobalModel> Global { get; set; }
         public DbSet<GroupModel> Groups { get; set; }
         public DbSet<GroupRatingModel> GroupRatings { get; set; }
-        public DbSet<EventCriterionModel> EventCriteria { get; set; }
         public DbSet<PropositionModel> Propositions { get; set; }
         public DbSet<RatingCriterionModel> RatingCriteria { get; set; }
         public DbSet<RatingModel> Ratings { get; set; }
@@ -56,21 +55,9 @@ namespace hackweek_backend.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<GroupRatingModel>()
-                .HasOne(gr => gr.EventCriterion)
+                .HasOne(gr => gr.Criterion)
                 .WithMany()
-                .HasForeignKey(gr => gr.EventCriterionId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<EventCriterionModel>()
-                .HasOne(pc => pc.Event)
-                .WithMany(p => p.EventCriteria)
-                .HasForeignKey(pc => pc.EventId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<EventCriterionModel>()
-                .HasOne(pc => pc.Criterion)
-                .WithMany()
-                .HasForeignKey(pc => pc.CriterionId)
+                .HasForeignKey(gr => gr.CriterionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RatingCriterionModel>()
@@ -110,6 +97,12 @@ namespace hackweek_backend.Data
             modelBuilder.Entity<GroupModel>()
                 .HasIndex(g => new { g.EventId, g.ProjectName })
                 .IsUnique();
+
+            modelBuilder.Entity<CriterionModel>()
+                 .HasOne(c => c.Event)
+                 .WithMany()
+                 .HasForeignKey(c => c.EventId)
+                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserModel>().HasData(
                 new UserModel
