@@ -37,8 +37,6 @@ namespace hackweek_backend.Services
 
         async public Task UpdateEvent(int id, EventModel request)
         {
-            var model = await _context.Events.FindAsync(id) ?? throw new Exception($"Evento não encontrado! ({id})");
-
             _context.Entry(request).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
