@@ -66,7 +66,7 @@ namespace hackweek_backend.Services
             var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception($"Evento atual não selecionado!");
 
             if (!currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
-            if ((role != UserRoles.Admin) || (!currentEvent.IsPublic)) return Enumerable.Empty<GroupDto>();
+            if ((role != UserRoles.Admin) && (!currentEvent.IsPublic)) return Enumerable.Empty<GroupDto>();
 
             var propositionIds = await _context.Propositions
                 .Where(p => p.EventId == currentEvent.Id)
