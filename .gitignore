@@ -398,5 +398,7 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Envs
-appsettings.json
+appsettings*.json
 
+# Migrations
+*/Migrations
