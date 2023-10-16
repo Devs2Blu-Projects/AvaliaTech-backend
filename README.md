@@ -22,6 +22,7 @@
   <img src="https://img.shields.io/badge/Microsoft%20SQL%20Server-CC2927?style=for-the-badge&logo=microsoft%20sql%20server&logoColor=white">
   <img src="https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white">
   <img src="https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white"> 
+   <img src="https://img.shields.io/badge/entity-512BD4?style=for-the-badge&logo=dotnet&logoColor=white"> 
   
  </div>
 
@@ -87,111 +88,114 @@ Substitua `seu-usuario` pelo seu nome de usuário do GitHub ou use o URL correto
 
 ### Critério
 
- `POST /api/Criterion`: Cria um novo critério.
+ `POST /Criterion`: Cria um novo critério.
  
- `GET /api/Criterion`: Retorna todos os critérios.
+ `GET /Criterion`: Retorna todos os critérios.
  
- `GET /api/Criterion/{Id}`: Retorna um critério por Id.
+ `GET /Criterion/{Id}`: Retorna um critério por Id.
  
- `GET /api/Criterion/event`: Retorna todos os critérios do evento atual.
+ `GET /Criterion/event`: Retorna todos os critérios do evento atual.
  
- `GET /api/Criterion/event/{Id}`: Retorna todos os critérios de um evento por Id (do evento).
+ `GET /Criterion/event/{Id}`: Retorna todos os critérios de um evento por Id (do evento).
  
- `PUT /api/Criterion/{Id}`: Atualiza um critério.
+ `PUT /Criterion/{Id}`: Atualiza um critério.
  
- `DELETE /api/Criterion/{Id}`: Deleta um critério.
+ `DELETE /Criterion/{Id}`: Deleta um critério.
 
 <hr>
 
 ### Evento
 
- `GET /api/Event`: Retorna todos os eventos.
+ `GET /Event`: Retorna todos os eventos.
  
- `GET /api/Event/{Id}`: Retorna um evento por Id.
+ `GET /Event/{Id}`: Retorna um evento por Id.
  
- `POST /api/Event`: Cria um novo evento.
+ `POST /Event`: Cria um novo evento.
  
- `DELETE /api/Event/{Id}`: Deleta um evento.
+ `DELETE /Event/{Id}`: Deleta um evento.
  
- `PUT /api/Event/{Id}`: Atualiza um evento.
+ `PUT /Event/{Id}`: Atualiza um evento.
 
 <hr>
 
 ### Global
 
- `GET /api/Global/currentevent`: Retorna o evento atual.
+ `GET /Global/currentevent`: Retorna o evento atual.
  
- `PUT /api/Global/currentevent/{eventId}`: Atualiza o evento atual.
+ `PUT /Global/currentevent/{eventId}`: Atualiza o evento atual.
  
- `PUT /api/Global/currentevent/public`: Disponibiliza o resultado do evento ao público.
+ `PUT /Global/currentevent/public`: Disponibiliza o resultado do evento ao público.
  
- `PUT /api/Global/currentevent/closed`: Encerra o período de avaliação do evento.
+ `PUT /Global/currentevent/closed`: Encerra o período de avaliação do evento.
 
 <hr>
 
 ### Grupo
 
- `GET /api/Group`: Retorna todos os grupos.
+ `GET /Group`: Retorna todos os grupos.
  
- `GET /api/Group/{id}`: Retorna um grupo por Id.
+ `GET /Group/{id}`: Retorna um grupo por Id.
  
- `GET /api/Group/user/{idUser}`: Retorna o grupo por representante.
+ `GET /Group/user/{idUser}`: Retorna o grupo por representante.
  
- `GET /api/Group/ranking`: Retorna o ranking.
+ `GET /Group/ranking`: Retorna o ranking.
  
- `GET /api/Group/rate/{idUser}`: Retorna os grupos para avaliar.
+ `GET /Group/rate/{idUser}`: Retorna os grupos para avaliar.
  
- `GET /api/Group/groupsByDate`: Retorna os grupos por dia.
+ `GET /Group/groupsByDate`: Retorna os grupos por dia.
  
- `PUT /api/Group/{id}`: Atualiza um grupo.
+ `PUT /Group/{id}`: Atualiza um grupo.
 
+`PUT /Group/updateOrder` : Atualiza a ordem dos grupos
 <hr>
 
 ### Login
 
- `POST /api/Login`: Faz o login.
+ `POST /Login`: Faz o login.
+
+<hr>
 
 ### Desafio
 
- `GET /api/Propostion`: Retorna todos os desafios.
+ `GET /Propostion`: Retorna todos os desafios.
  
- `GET /api/Propostion/{id}`: Retorna o desafio por Id.
+ `GET /Propostion/{id}`: Retorna o desafio por Id.
  
- `POST /api/Propostion`: Cria um desafio.
+ `POST /Propostion`: Cria um desafio.
  
- `DELETE /api/Propostion/{id}`: Deleta um desafio.
+ `DELETE /Propostion/{id}`: Deleta um desafio.
  
- `PUT /api/Propostion/{id}`: Atualiza um desafio.
+ `PUT /Propostion/{id}`: Atualiza um desafio.
 
 <hr>
 
 ### Avaliação
 
- `GET /api/Rating`: Retorna todas as avaliações.
+ `GET /Rating`: Retorna todas as avaliações.
  
- `GET /api/Rating/evaluator/{id}`: Retorna todas as avaliações de um avaliador (usuário).
+ `GET /Rating/evaluator/{id}`: Retorna todas as avaliações de um avaliador (usuário).
  
- `GET /api/Rating/group/{id}`: Retorna todas as avaliações de um grupo.
+ `GET /Rating/group/{id}`: Retorna todas as avaliações de um grupo.
  
- `POST /api/Rating`: Cria uma avaliação.
+ `POST /Rating`: Cria uma avaliação.
  
- `DELETE /api/Rating/{id}`: Deleta uma avaliação.
+ `DELETE /Rating/{id}`: Deleta uma avaliação.
 
 <hr>
 
 ### Usuários
 
- `GET /api/User/{id}`: Retorna um usuário por Id.
+ `GET /User/{id}`: Retorna um usuário por Id.
  
- `GET /api/User/role/{role}`: Retorna usuários por seu cargo (role).
+ `GET User/role/{role}`: Retorna usuários por seu cargo (role).
  
- `GET /api/User/{id}/redefine`: Retorna uma nova senha gerada.
+ `GET /User/{id}/redefine`: Retorna uma nova senha gerada.
  
- `POST /api/User`: Cria um usuário.
+ `POST /User`: Cria um usuário.
  
- `DELETE /api/User/{id}`: Deleta um usuário.
+ `DELETE /User/{id}`: Deleta um usuário.
  
- `PUT /api/User/{id}`: Atualiza um usuário.
+ `PUT /User/{id}`: Atualiza um usuário.
 </div>
 
 <hr>
