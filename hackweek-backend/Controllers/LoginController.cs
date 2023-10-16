@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace hackweek_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
