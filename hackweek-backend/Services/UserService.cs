@@ -3,6 +3,8 @@ using hackweek_backend.dtos;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace hackweek_backend.Services
 {
@@ -79,14 +81,34 @@ namespace hackweek_backend.Services
 
         public async Task<string> RedefinePassword(int id)
         {
-            var user = await _context.Users.FindAsync(id) ?? throw new Exception($"Usuário não cadastrado! ({id})");
+            var user = await _context.Users.FindAsync(id) ?? throw new Exception($"Usuário não cadastrado! ({id}");
 
-            var password = Guid.NewGuid().ToString().Replace("-", "");
+            var passwordLength = 12;
+            var specialCharacters = "!@#$%^&*";
 
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
-            await _context.SaveChangesAsync();
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                var bytes = new byte[passwordLength];
+                rng.GetBytes(bytes);
 
-            return password;
+                var password = Convert.ToBase64String(bytes)
+                    .Replace("/", string.Empty)
+                    .Replace("+", string.Empty)
+                    .Substring(0, passwordLength);
+
+                var random = new Random();
+                for (int i = 0; i < 2; i++)
+                {
+                    int specialCharIndex = random.Next(0, specialCharacters.Length);
+                    int position = random.Next(0, password.Length);
+                    password = password.Remove(position, 1).Insert(position, specialCharacters[specialCharIndex].ToString());
+                }
+
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
+                await _context.SaveChangesAsync();
+
+                return password;
+            }
         }
 
         public async Task UpdateUser(int id, UserDtoUpdate request)
