@@ -147,5 +147,28 @@ namespace hackweek_backend.Services
 
             return groupsByDate;
         }
+
+        public async Task UpdateGroupOrder(List<GroupsByDateDTO> groupOrder)
+        {
+            int order = 1;
+
+            foreach (var day in groupOrder)
+            {
+                foreach (var group in day.Groups)
+                {
+                    if (group != null)
+                    {
+                        var groupModel = await _context.Groups.FindAsync(group.Id);
+                        if (groupModel != null)
+                        {
+                            groupModel.DateOffset = group.DateOffset;
+                            groupModel.Position = (uint)order++;
+                        }
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
