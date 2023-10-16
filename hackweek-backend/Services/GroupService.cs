@@ -58,6 +58,30 @@ namespace hackweek_backend.Services
 
             if (group == null) return null;
 
+            if (group.GroupRatings is null) group.GroupRatings = new List<GroupRatingModel>();
+
+            var criteria = await _context.Criteria.Where(c => c.EventId == group.EventId).ToListAsync();
+
+            foreach (var criterion in criteria)
+            {
+                var groupRating = group.GroupRatings.FirstOrDefault(gr => gr.CriterionId == criterion.Id);
+
+                if (groupRating is null)
+                {
+                    groupRating = new GroupRatingModel
+                    {
+                        Grade = 0,
+                        GroupId = group.Id,
+                        CriterionId = criterion.Id,
+
+                        Group = group,
+                    };
+                    group.GroupRatings.Add(groupRating);
+                }
+                groupRating.Criterion = criterion;
+            }
+            group.GroupRatings = group.GroupRatings.OrderBy(gr => gr.CriterionId).ToList();
+
             return new GroupDto(group);
         }
 
