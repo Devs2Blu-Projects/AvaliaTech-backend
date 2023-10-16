@@ -1,3 +1,4 @@
+using hackweek_backend.dtos;
 using hackweek_backend.Models;
 
 namespace hackweek_backend.Services.Interfaces
@@ -6,8 +7,8 @@ namespace hackweek_backend.Services.Interfaces
     {
         Task<IEnumerable<EventModel>> GetEvents();
         Task<EventModel?> GetEventById(int id);
-        Task CreateEvent(EventModel request);
+        Task CreateEvent(EventDtoInsert request);
         Task DeleteEvent(int id);
-        Task UpdateEvent(int id, EventModel request);
+        Task UpdateEvent(int id, EventDtoUpdate request);
     }
 }

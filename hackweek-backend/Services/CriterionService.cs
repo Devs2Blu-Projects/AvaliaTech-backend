@@ -2,7 +2,6 @@
 using hackweek_backend.dtos;
 using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace hackweek_backend.Services
 {
@@ -12,7 +11,7 @@ namespace hackweek_backend.Services
         private readonly IGlobalService _global;
 
         public CriterionService(DataContext context, IGlobalService global) { _context = context; _global = global; }
-        async public Task CreateCriterion(CriterionDTO request)
+        async public Task CreateCriterion(CriterionDtoInsert request)
         {
             var currentEvent = await _global.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
 
@@ -62,7 +61,7 @@ namespace hackweek_backend.Services
             return await _context.Criteria.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        async public Task UpdateCriterion(int id, CriterionDTO request)
+        async public Task UpdateCriterion(int id, CriterionDtoUpdate request)
         {
             if (request.Id != id) throw new Exception("Id diferente do critério informado!");
             var currentEvent = await _global.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");

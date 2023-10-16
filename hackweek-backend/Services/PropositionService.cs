@@ -48,7 +48,7 @@ namespace hackweek_backend.Services
             }
         }
 
-        public async Task CreateProposition(PropositionDTO request)
+        public async Task CreateProposition(PropositionDtoInsert request)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace hackweek_backend.Services
             }
         }
 
-        public async Task UpdateProposition(int id, PropositionDTO request)
+        public async Task UpdateProposition(int id, PropositionDtoUpdate request)
         {
             try
             {
