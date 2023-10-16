@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace hackweek_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class GroupController : ControllerBase
     {
@@ -31,7 +31,7 @@ namespace hackweek_backend.Controllers
         public async Task<ActionResult<GroupDto?>> GetGroupById(int id)
         {
             var group = await _service.GetGroupById(id);
-            if (group == null) return NotFound("Grupo n�o encontrado!");
+            if (group == null) return NotFound("Grupo não encontrado!");
 
             return Ok(group);
         }
@@ -40,12 +40,14 @@ namespace hackweek_backend.Controllers
         [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Group}")]
         public async Task<ActionResult> UpdateGroup(int id, GroupDtoUpdate request)
         {
-            if (!_login.HasAccessToUser(HttpContext, id)) return Unauthorized();
+            var group = await _service.GetGroupById(id);
+            if (group == null) return NotFound("Grupo não encontrado!");
+            if (!_login.HasAccessToUser(HttpContext, group.UserId)) return Unauthorized();
 
             try
             {
                 await _service.UpdateGroup(id, request);
-                return Ok("Usu�rio atualizado com sucesso!");
+                return Ok("Usuário atualizado com sucesso!");
             }
             catch (Exception e)
             {
@@ -60,7 +62,7 @@ namespace hackweek_backend.Controllers
             if (!_login.HasAccessToUser(HttpContext, idUser)) return Unauthorized();
 
             var group = await _service.GetGroupByUser(idUser);
-            if (group == null) return NotFound("Grupo n�o encontrado!");
+            if (group == null) return NotFound("Grupo não encontrado!");
 
             return Ok(group);
         }
@@ -74,7 +76,7 @@ namespace hackweek_backend.Controllers
 
         [HttpGet("rate/{idUser}")]
         [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.User}")]
-        public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroupsToRate(int idUser)
+        public async Task<ActionResult<IEnumerable<GroupDtoWithoutGrade>>> GetGroupsToRate(int idUser)
         {
             if (!_login.HasAccessToUser(HttpContext, idUser)) return Unauthorized();
 

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace hackweek_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class RatingController : ControllerBase
     {
@@ -31,9 +31,9 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpDelete("avaliador/{id}")]
+        [HttpDelete("evaluator/{id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> DeleteRatingByAvaliadorById(int id)
+        public async Task<IActionResult> DeleteRating(int id)
         {
             try
             {
@@ -46,9 +46,9 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpGet("avaliador/{id}")]
+        [HttpGet("evaluator/{id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetRatingById(int id) //TODO: Check method name
+        public async Task<IActionResult> GetRatingById(int id)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace hackweek_backend.Controllers
         {
             try
             {
-                var result = await _service.GetAllRatings(); //TODO: check parameter
+                var result = await _service.GetAllRatings();
                 return Ok(result);
             }
             catch (Exception ex)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace hackweek_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class PropositionController : ControllerBase
     {
@@ -51,7 +51,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProposition(PropositionDTO request)
+        public async Task<IActionResult> CreateProposition(PropositionDtoInsert request)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProposition(int id, PropositionDTO request)
+        public async Task<IActionResult> UpdateProposition(int id, PropositionDtoUpdate request)
         {
             try
             {

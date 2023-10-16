@@ -1,11 +1,12 @@
-﻿using hackweek_backend.Models;
+﻿using hackweek_backend.dtos;
+using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hackweek_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class EventController : ControllerBase
     {
@@ -32,7 +33,7 @@ namespace hackweek_backend.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<string>> CreateEvent(EventModel request)
+        public async Task<ActionResult<string>> CreateEvent(EventDtoInsert request)
         {
             try
             {
@@ -60,9 +61,9 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpPut("Id")]
+        [HttpPut("{Id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<string>> UpdateEvent(int Id, EventModel request)
+        public async Task<ActionResult<string>> UpdateEvent(int Id, EventDtoUpdate request)
         {
             try
             {
