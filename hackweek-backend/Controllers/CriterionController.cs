@@ -18,12 +18,12 @@ namespace hackweek_backend.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> CreateCriterion(CriterionDTO request)
+        public async Task<IActionResult> CreateCriterion(CriterionDtoInsert request)
         {
             try
             {
                 await _service.CreateCriterion(request);
-                return CreatedAtAction(nameof(GetCriterionById), new { id = request.Id }, request);
+                return Ok("Critério criado com sucesso!");
             }
             catch (Exception e)
             {
@@ -32,7 +32,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet("{Id}")]
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize]
         public async Task<IActionResult> GetCriterionById(int Id)
         {
             try
@@ -53,7 +53,7 @@ namespace hackweek_backend.Controllers
             try
             {
                 await _service.DeleteCriterion(Id);
-                return NoContent();
+                return Ok("Critério excluído com sucesso!");
             }
             catch (Exception e)
             {
@@ -62,7 +62,7 @@ namespace hackweek_backend.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize]
         public async Task<IActionResult> GetCriteria()
         {
             try
@@ -76,13 +76,28 @@ namespace hackweek_backend.Controllers
             }
         }
 
-        [HttpGet("proposition/{IdProposition}")]
-        [Authorize(Roles = UserRoles.Admin)]
+        [HttpGet("event/{IdEvent}")]
+        [Authorize]
         public async Task<IActionResult> GetCriteriaByEvent(int IdEvent)
         {
             try
             {
-                var result = await _service.GetCriteriaByEvent(IdEvent);
+                var result = await _service.GetCriteriaByEventId(IdEvent);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("event")]
+        [Authorize]
+        public async Task<IActionResult> GetCriteriaByCurrentEvent()
+        {
+            try
+            {
+                var result = await _service.GetCriteriaByCurrentEvent();
                 return Ok(result);
             }
             catch (Exception e)
@@ -93,12 +108,12 @@ namespace hackweek_backend.Controllers
 
         [HttpPut("{Id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> UpdateCriterion(int Id, CriterionDTO request)
+        public async Task<IActionResult> UpdateCriterion(int Id, CriterionDtoUpdate request)
         {
             try
             {
                 await _service.UpdateCriterion(Id, request);
-                return NoContent();
+                return Ok("Critério atualizado com sucesso!");
             }
             catch (Exception e)
             {

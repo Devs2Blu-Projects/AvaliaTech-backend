@@ -2,7 +2,7 @@
 
 namespace hackweek_backend.dtos
 {
-    public class CriterionDTO
+    public class CriterionDtoUpdate
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;

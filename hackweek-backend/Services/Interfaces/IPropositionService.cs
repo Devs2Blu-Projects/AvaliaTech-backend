@@ -7,8 +7,8 @@ namespace hackweek_backend.Services.Interfaces
     {
         Task<IEnumerable<PropositionModel>> GetPropositions();
         Task<PropositionModel?> GetPropositionById(int id);
-        Task CreateProposition(PropositionDTO request);
+        Task CreateProposition(PropositionDtoInsert request);
         Task DeleteProposition(int id);
-        Task UpdateProposition(int id, PropositionDTO request);
+        Task UpdateProposition(int id, PropositionDtoUpdate request);
     }
 }

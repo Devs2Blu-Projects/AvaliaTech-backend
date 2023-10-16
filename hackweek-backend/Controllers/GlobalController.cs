@@ -1,4 +1,5 @@
-﻿using hackweek_backend.Models;
+﻿using hackweek_backend.dtos;
+using hackweek_backend.Models;
 using hackweek_backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
