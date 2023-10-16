@@ -113,7 +113,7 @@ namespace hackweek_backend.Services
 
             return await _context.Groups
                 .Include(g => g.Proposition)
-                .Where(g => (!ratedGroupIdList.Contains(g.Id)) && (DateTime.Now == currentEvent.StartDate.AddDays(g.DateOffset)))
+                .Where(g => (!ratedGroupIdList.Contains(g.Id)) && (DateTime.Now.Date == currentEvent.StartDate.AddDays(g.DateOffset).Date))
                 .Select(g => new GroupDtoWithoutGrade(g)).ToListAsync();
         }
 
