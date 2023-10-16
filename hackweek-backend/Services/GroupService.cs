@@ -126,7 +126,7 @@ namespace hackweek_backend.Services
 
             List<GroupsByDateDTO> groupsByDate = new List<GroupsByDateDTO>();
 
-            for (DateTime dt = startDate.Date; dt.Date <= endDate.Date; dt=dt.Date.AddDays(1))
+            for (DateTime dt = startDate.Date; dt.Date <= endDate.Date; dt = dt.Date.AddDays(1))
             {
                 groupsByDate.Add(new GroupsByDateDTO
                 {
@@ -137,7 +137,7 @@ namespace hackweek_backend.Services
             var groups = await _context.Groups
                 .Include(g => g.Proposition)
                 .Where(g => g.EventId == currentEvent.Id)
-                .OrderBy(g => g.DateOffset)
+                .OrderBy(g => g.Position)
                 .ToListAsync();
 
             foreach (var group in groups)
@@ -146,6 +146,29 @@ namespace hackweek_backend.Services
             }
 
             return groupsByDate;
+        }
+
+        public async Task UpdateGroupOrder(List<GroupsByDateDTO> groupOrder)
+        {
+            int order = 1;
+
+            for (int i = 0; i < groupOrder.Count; i++)
+            {
+                foreach (var group in groupOrder[i].Groups)
+                {
+                    if (group != null)
+                    {
+                        var groupModel = await _context.Groups.FirstOrDefaultAsync(g => g.Id == group.Id);
+                        if (groupModel != null)
+                        {
+                            groupModel.DateOffset = (uint)i;
+                            groupModel.Position = (uint)order++;
+                        }
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }
