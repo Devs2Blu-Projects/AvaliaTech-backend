@@ -15,6 +15,7 @@ namespace hackweek_backend.dtos
         public uint Position { get; set; }
         public uint DateOffset { get; set; }
         public int UserId { get; set; }
+        public int EventId { get; set; }
         public List<GroupRatingDto>? GroupRatings { get; set; }
 
         public GroupDto() { }
@@ -34,6 +35,7 @@ namespace hackweek_backend.dtos
                 Position = group.Position;
                 DateOffset = group.DateOffset;
                 UserId = group.UserId;
+                EventId = group.EventId;
                 GroupRatings = group.GroupRatings?.Select(gr => new GroupRatingDto(gr)).ToList();
             }
         }

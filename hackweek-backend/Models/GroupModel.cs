@@ -14,7 +14,7 @@
         public uint DateOffset { get; set; }
         public int UserId { get; set; }
         public UserModel? User { get; set; }
-        public List<GroupRatingModel>? GroupRatings { get; set; }
+        public List<GroupRatingModel> GroupRatings { get; set; } = new List<GroupRatingModel>();
         public int EventId { get; set; }
         public EventModel? Event { get; set; }
     }

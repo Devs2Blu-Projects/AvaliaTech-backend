@@ -39,7 +39,7 @@ namespace hackweek_backend.Services
         {
             if (request.Id != id) throw new Exception("Id diferente do grupo informado!");
 
-            var group = await _context.Groups.FindAsync(id) ?? throw new Exception($"Grupo n„o encontrado! ({request.Id})");
+            var group = await _context.Groups.FindAsync(id) ?? throw new Exception($"Grupo n√£o encontrado! ({request.Id})");
 
             group.Team = request.Team;
             group.Language = request.Language;
@@ -53,7 +53,7 @@ namespace hackweek_backend.Services
         public async Task<GroupDto?> GetGroupByUser(int idUser)
         {
             var group = await _context.Groups
-                .Include(g => g.Proposition).Include(g => g.GroupRatings)
+                .Include(g => g.Proposition).Include(g => g.GroupRatings).ThenInclude(gr => gr.Criterion)
                 .FirstOrDefaultAsync(g => g.UserId == idUser);
 
             if (group == null) return null;
@@ -87,7 +87,7 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupDto>> GetGroupsRanking(string role)
         {
-            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual n„o selecionado!");
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual n√£o selecionado!");
 
             if (!currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
             if ((role != UserRoles.Admin) && (!currentEvent.IsPublic)) return Enumerable.Empty<GroupDto>();
@@ -105,7 +105,7 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupDtoWithoutGrade>> GetGroupsToRate(int idUser)
         {
-            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual n„o selecionado!");
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual n√£o selecionado!");
 
             if (currentEvent.IsClosed) return Enumerable.Empty<GroupDtoWithoutGrade>();
 
@@ -119,7 +119,7 @@ namespace hackweek_backend.Services
 
         public async Task<IEnumerable<GroupsByDateDTO>> GetAllEventGroupsByDate()
         {
-            EventModel? currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual n„o selecionado!");
+            EventModel? currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual n√£o selecionado!");
 
             DateTime startDate = currentEvent.StartDate.Date;
             DateTime endDate = currentEvent.EndDate.Date;
