@@ -18,7 +18,9 @@ namespace hackweek_backend.Services
 
         async public Task<EventModel?> GetEventById(int id)
         {
-            return await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
+            return await _context.Events
+                .Include(e => e.Propositions)
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
 
         async public Task CreateEvent(EventDtoInsert request)
