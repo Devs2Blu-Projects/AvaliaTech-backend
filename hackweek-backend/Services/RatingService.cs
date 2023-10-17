@@ -248,7 +248,9 @@ namespace hackweek_backend.Services
 
         async public Task<List<RatingGetDTO>?> GetRatingsByGroup(int idGroup)
         {
-            List<RatingModel> ratings = await _context.Ratings.Where(r => r.GroupId == idGroup).ToListAsync();
+            List<RatingModel> ratings = await _context.Ratings
+                .Include(r => r.User).Include(r => r.Group)
+                .Where(r => r.GroupId == idGroup).ToListAsync();
 
             if (ratings.Count == 0 || ratings == null) return null;
 
