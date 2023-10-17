@@ -23,7 +23,7 @@ namespace hackweek_backend.Controllers
             try
             {
                 await _service.CreateRating(rating);
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -38,7 +38,7 @@ namespace hackweek_backend.Controllers
             try
             {
                 await _service.DeleteRating(id);
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {

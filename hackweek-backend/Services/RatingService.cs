@@ -127,7 +127,7 @@ namespace hackweek_backend.Services
 
             foreach (var i in ratingsGroup) finalGrade += CalculateFinalGradeByRating(i.Id);
 
-            finalGrade = finalGrade / ratingsGroup.Count();
+            if (ratingsGroup.Count() > 0) finalGrade = finalGrade / ratingsGroup.Count();
 
             return finalGrade;
         }
