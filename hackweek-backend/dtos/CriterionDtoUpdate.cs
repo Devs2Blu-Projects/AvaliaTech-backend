@@ -1,12 +1,12 @@
-﻿namespace hackweek_backend.Models
+﻿using hackweek_backend.Models;
+
+namespace hackweek_backend.dtos
 {
-    public class CriterionModel
+    public class CriterionDtoUpdate
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int Weight { get; set; }
-        public int EventId { get; set; }
-        public EventModel? Event { get; set; }
     }
 }

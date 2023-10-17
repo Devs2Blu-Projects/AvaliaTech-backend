@@ -1,0 +1,183 @@
+using hackweek_backend.Data;
+using hackweek_backend.dtos;
+using hackweek_backend.Models;
+using hackweek_backend.Services.Interfaces;
+using System.Data;
+
+namespace hackweek_backend.Services
+{
+    public class GroupService : IGroupService
+    {
+        private readonly DataContext _context;
+        private readonly IGlobalService _globalService;
+
+        public GroupService(DataContext context, IGlobalService globalService)
+        {
+            _context = context;
+            _globalService = globalService;
+        }
+
+        public async Task<IEnumerable<GroupDto>> GetGroups()
+        {
+            return await _context.Groups
+                .Include(g => g.Proposition).Include(g => g.GroupRatings)
+                .Select(g => new GroupDto(g)).ToListAsync();
+        }
+
+        public async Task<GroupDto?> GetGroupById(int id)
+        {
+            var group = await _context.Groups
+                .Include(g => g.Proposition).Include(g => g.GroupRatings)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
+            if (group == null) return null;
+
+            return new GroupDto(group);
+        }
+
+        public async Task UpdateGroup(int id, GroupDtoUpdate request)
+        {
+            if (request.Id != id) throw new Exception("Id diferente do grupo informado!");
+
+            var group = await _context.Groups.FindAsync(id) ?? throw new Exception($"Grupo não encontrado! ({request.Id})");
+
+            group.Team = request.Team;
+            group.Language = request.Language;
+            group.PropositionId = request.PropositionId;
+
+            if (request.ProjectName != string.Empty)
+                group.ProjectName = request.ProjectName;
+
+            group.ProjectDescription = request.ProjectDescription;
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<GroupDto?> GetGroupByUser(int idUser)
+        {
+            var group = await _context.Groups
+                .Include(g => g.Proposition).Include(g => g.User).Include(g => g.GroupRatings).ThenInclude(gr => gr.Criterion)
+                .FirstOrDefaultAsync(g => g.UserId == idUser);
+
+            if (group == null) return null;
+
+            if (group.GroupRatings is null) group.GroupRatings = new List<GroupRatingModel>();
+
+            var criteria = await _context.Criteria.Where(c => c.EventId == group.EventId).ToListAsync();
+
+            foreach (var criterion in criteria)
+            {
+                var groupRating = group.GroupRatings.FirstOrDefault(gr => gr.CriterionId == criterion.Id);
+
+                if (groupRating is null)
+                {
+                    groupRating = new GroupRatingModel
+                    {
+                        Grade = 0,
+                        GroupId = group.Id,
+                        CriterionId = criterion.Id,
+
+                        Group = group,
+                    };
+                    group.GroupRatings.Add(groupRating);
+                }
+                groupRating.Criterion = criterion;
+            }
+            group.GroupRatings = group.GroupRatings.OrderBy(gr => gr.CriterionId).ToList();
+
+            var dto = new GroupDto(group);
+
+            if ((group.User != null) && (group.User.Username == dto.ProjectName))
+                dto.ProjectName = string.Empty;
+
+            return dto;
+        }
+
+        public async Task<IEnumerable<GroupDto>> GetGroupsRanking(string role)
+        {
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
+
+            if (!currentEvent.IsClosed) return Enumerable.Empty<GroupDto>();
+            if ((role != UserRoles.Admin) && (!currentEvent.IsPublic)) return Enumerable.Empty<GroupDto>();
+
+            var propositionIds = await _context.Propositions
+                .Where(p => p.EventId == currentEvent.Id)
+                .Select(p => p.Id).ToListAsync();
+
+            return await _context.Groups
+                .Where(g => propositionIds.Contains(g.PropositionId ?? -1))
+                .Include(g => g.Proposition).Include(g => g.GroupRatings)
+                .OrderByDescending(g => g.FinalGrade)
+                .Select(g => new GroupDto(g)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<GroupDtoWithoutGrade>> GetGroupsToRate(int idUser)
+        {
+            var currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
+
+            if (currentEvent.IsClosed) return Enumerable.Empty<GroupDtoWithoutGrade>();
+
+            var ratedGroupIdList = await _context.Ratings.Where(r => r.UserId == idUser).Select(r => r.GroupId).ToListAsync();
+
+            return await _context.Groups
+                .Include(g => g.Proposition)
+                .Where(g => (!ratedGroupIdList.Contains(g.Id)) && (DateTime.Now.Date == currentEvent.StartDate.AddDays(g.DateOffset).Date))
+                .OrderBy(g => g.Position)
+                .Select(g => new GroupDtoWithoutGrade(g)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<GroupsByDateDTO>> GetAllEventGroupsByDate()
+        {
+            EventModel? currentEvent = await _globalService.GetCurrentEvent() ?? throw new Exception("Evento atual não selecionado!");
+
+            DateTime startDate = currentEvent.StartDate.Date;
+            DateTime endDate = currentEvent.EndDate.Date;
+
+            List<GroupsByDateDTO> groupsByDate = new List<GroupsByDateDTO>();
+
+            for (DateTime dt = startDate.Date; dt.Date <= endDate.Date; dt = dt.Date.AddDays(1))
+            {
+                groupsByDate.Add(new GroupsByDateDTO
+                {
+                    Date = dt,
+                });
+            }
+
+            var groups = await _context.Groups
+                .Include(g => g.Proposition)
+                .Where(g => g.EventId == currentEvent.Id)
+                .OrderBy(g => g.Position)
+                .ToListAsync();
+
+            foreach (var group in groups)
+            {
+                groupsByDate[(int)group.DateOffset].Groups.Add(new GroupDto(group));
+            }
+
+            return groupsByDate;
+        }
+
+        public async Task UpdateGroupOrder(List<GroupsByDateDTO> groupOrder)
+        {
+            int order = 1;
+
+            for (int i = 0; i < groupOrder.Count; i++)
+            {
+                foreach (var group in groupOrder[i].Groups)
+                {
+                    if (group != null)
+                    {
+                        var groupModel = await _context.Groups.FirstOrDefaultAsync(g => g.Id == group.Id);
+                        if (groupModel != null)
+                        {
+                            groupModel.DateOffset = (uint)i;
+                            groupModel.Position = (uint)order++;
+                        }
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
+    }
+}

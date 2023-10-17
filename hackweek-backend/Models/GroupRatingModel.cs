@@ -3,7 +3,10 @@
     public class GroupRatingModel
     {
         public int Id { get; set; }
+        public  double Grade { get; set; }
         public int GroupId { get; set; }
-        public GroupModel? Group { get; set; }afsfgf
+        public int CriterionId { get; set; }
+        public GroupModel? Group { get; set; }
+        public CriterionModel? Criterion { get; set; }
     }
 }
