@@ -54,6 +54,8 @@ namespace hackweek_backend.Services
             _context.RatingCriteria.RemoveRange(ratingCriterion);
             _context.Ratings.Remove(rating);
             await _context.SaveChangesAsync();
+
+            UpdateGroup(rating.GroupId);
         }
 
         public async Task<RatingGetDTO?> GetRatingById(int id)
@@ -215,20 +217,21 @@ namespace hackweek_backend.Services
             return retorno;
         }
 
-        async public Task<List<RatingGetDTO>?> GetRatingsByGroup(int idGroup)
+        async public Task<List<RatingGroupGetDTO>?> GetRatingsByGroup(int idGroup)
         {
             List<RatingModel> ratings = await _context.Ratings.Where(r => r.GroupId == idGroup).ToListAsync();
 
             if (ratings.Count == 0 || ratings == null) return null;
 
-            List<RatingGetDTO> retorno = new List<RatingGetDTO>();
+            List<RatingGroupGetDTO> retorno = new List<RatingGroupGetDTO>();
 
             foreach (var r in ratings)
             {
                 double grade = CalculateFinalGradeByRating(r.Id);
 
-                RatingGetDTO j = new RatingGetDTO
+                RatingGroupGetDTO j = new RatingGroupGetDTO
                 {
+                    IdRating = r.Id,
                     Grade = grade,
                     User = new UserDto(r.User),
                     Group = new GroupDto(r.Group),
