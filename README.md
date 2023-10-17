@@ -73,15 +73,13 @@ Substitua `seu-usuario` pelo seu nome de usuário do GitHub ou use o URL correto
 
 <div align='center'>
 <p><a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Exo+2&size=25&pause=1000&color=216EC8&center=true&vCenter=true&random=false&width=435&lines=Documenta%C3%A7%C3%A3o%3A" alt="Typing SVG" /></a></p>
-<h3>UML</h3>
-<a href="https://imgur.com/2SkRuTq"><img src="https://i.imgur.com/2SkRuTq.png" title="source: imgur.com" /></a>
-<small>Feito com LucidChart</small>
+<h4>UML (Feita com LucidChart)</h4> 
+<img src="https://github.com/Devs2Blu-Projects/AvaliaTech-backend/assets/119363998/531d985b-0a28-4385-839b-6c05b876ddea"> 
 </div>
 
 <hr>
 
 <br>
-
 
 <div align='center'>
 <p ><a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Exo+2&size=25&pause=1000&color=639CC8&center=true&vCenter=true&random=false&width=435&lines=Endpoints+%F0%9F%93%8D%3A" alt="Typing SVG" /></a></p>
