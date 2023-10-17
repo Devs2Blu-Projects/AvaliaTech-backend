@@ -48,16 +48,31 @@ namespace hackweek_backend.Services
         {
             if (request.Id != id) throw new Exception("Id diferente do evento informado!");
 
-            var events = await _context.Events.FindAsync(id) ?? throw new Exception($"Evento não encontrado! ({request.Id})");
+            var @event = await _context.Events.FindAsync(id) ?? throw new Exception($"Evento não encontrado! ({request.Id})");
 
-            events.Name = request.Name;
-            events.StartDate = request.StartDate;
-            events.EndDate = request.EndDate;
-            events.IsClosed = request.IsClosed;
-            events.IsPublic = request.IsPublic;
+            @event.Name = request.Name;
+            @event.StartDate = request.StartDate;
+            @event.EndDate = request.EndDate;
+            @event.IsClosed = request.IsClosed;
+            @event.IsPublic = request.IsPublic;
 
             await _context.SaveChangesAsync();
 
+            await CatchGroupsOutsideEventDateRange(@event);
+        }
+
+        async private Task CatchGroupsOutsideEventDateRange(EventModel @event)
+        {
+            int maxDayOffset = @event.EndDate.Subtract(@event.StartDate).Days;
+
+            var groups = await _context.Groups.Where(g => g.EventId == @event.Id && g.DateOffset > (uint)maxDayOffset).ToListAsync();
+
+            foreach (var group in groups)
+            {
+                group.DateOffset = (uint)maxDayOffset;
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

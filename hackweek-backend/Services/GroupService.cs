@@ -44,7 +44,10 @@ namespace hackweek_backend.Services
             group.Team = request.Team;
             group.Language = request.Language;
             group.PropositionId = request.PropositionId;
-            group.ProjectName = request.ProjectName;
+
+            if (request.ProjectName != string.Empty)
+                group.ProjectName = request.ProjectName;
+
             group.ProjectDescription = request.ProjectDescription;
 
             await _context.SaveChangesAsync();
@@ -53,7 +56,7 @@ namespace hackweek_backend.Services
         public async Task<GroupDto?> GetGroupByUser(int idUser)
         {
             var group = await _context.Groups
-                .Include(g => g.Proposition).Include(g => g.GroupRatings).ThenInclude(gr => gr.Criterion)
+                .Include(g => g.Proposition).Include(g => g.User).Include(g => g.GroupRatings).ThenInclude(gr => gr.Criterion)
                 .FirstOrDefaultAsync(g => g.UserId == idUser);
 
             if (group == null) return null;
@@ -82,7 +85,12 @@ namespace hackweek_backend.Services
             }
             group.GroupRatings = group.GroupRatings.OrderBy(gr => gr.CriterionId).ToList();
 
-            return new GroupDto(group);
+            var dto = new GroupDto(group);
+
+            if ((group.User != null) && (group.User.Username == dto.ProjectName))
+                dto.ProjectName = string.Empty;
+
+            return dto;
         }
 
         public async Task<IEnumerable<GroupDto>> GetGroupsRanking(string role)
@@ -114,6 +122,7 @@ namespace hackweek_backend.Services
             return await _context.Groups
                 .Include(g => g.Proposition)
                 .Where(g => (!ratedGroupIdList.Contains(g.Id)) && (DateTime.Now.Date == currentEvent.StartDate.AddDays(g.DateOffset).Date))
+                .OrderBy(g => g.Position)
                 .Select(g => new GroupDtoWithoutGrade(g)).ToListAsync();
         }
 
@@ -126,7 +135,7 @@ namespace hackweek_backend.Services
 
             List<GroupsByDateDTO> groupsByDate = new List<GroupsByDateDTO>();
 
-            for (DateTime dt = startDate.Date; dt.Date <= endDate.Date; dt=dt.Date.AddDays(1))
+            for (DateTime dt = startDate.Date; dt.Date <= endDate.Date; dt = dt.Date.AddDays(1))
             {
                 groupsByDate.Add(new GroupsByDateDTO
                 {
@@ -137,7 +146,7 @@ namespace hackweek_backend.Services
             var groups = await _context.Groups
                 .Include(g => g.Proposition)
                 .Where(g => g.EventId == currentEvent.Id)
-                .OrderBy(g => g.DateOffset)
+                .OrderBy(g => g.Position)
                 .ToListAsync();
 
             foreach (var group in groups)
@@ -146,6 +155,29 @@ namespace hackweek_backend.Services
             }
 
             return groupsByDate;
+        }
+
+        public async Task UpdateGroupOrder(List<GroupsByDateDTO> groupOrder)
+        {
+            int order = 1;
+
+            for (int i = 0; i < groupOrder.Count; i++)
+            {
+                foreach (var group in groupOrder[i].Groups)
+                {
+                    if (group != null)
+                    {
+                        var groupModel = await _context.Groups.FirstOrDefaultAsync(g => g.Id == group.Id);
+                        if (groupModel != null)
+                        {
+                            groupModel.DateOffset = (uint)i;
+                            groupModel.Position = (uint)order++;
+                        }
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

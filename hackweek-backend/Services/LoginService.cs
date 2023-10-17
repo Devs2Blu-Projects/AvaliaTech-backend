@@ -43,12 +43,20 @@ namespace hackweek_backend.Services
             if (claimsIdentity == null)
                 return null;
 
+            var nameId    = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var name      = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+            var givenName = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName);
+            var role      = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+
+            if ((nameId is null) || (name is null) || (givenName is null) || (role is null))
+                return null;
+
             return new UserDto
             {
-                Id = int.Parse(claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value!),
-                Username = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value!,
-                Name = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value!,
-                Role = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value!
+                Id = int.Parse(nameId.Value),
+                Username = name.Value,
+                Name = givenName.Value,
+                Role = role.Value
             };
         }
 

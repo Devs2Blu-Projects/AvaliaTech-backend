@@ -12,5 +12,6 @@ namespace hackweek_backend.Services.Interfaces
         Task<IEnumerable<GroupDto>> GetGroupsRanking(string role);
         Task<IEnumerable<GroupDtoWithoutGrade>> GetGroupsToRate(int idUser);
         Task<IEnumerable<GroupsByDateDTO>> GetAllEventGroupsByDate();
+        Task UpdateGroupOrder(List<GroupsByDateDTO> groupOrder);
     }
 }
