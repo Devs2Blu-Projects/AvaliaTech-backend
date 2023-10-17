@@ -231,7 +231,7 @@ namespace hackweek_backend.Services
 
                 RatingGroupGetDTO j = new RatingGroupGetDTO
                 {
-                    IdRating = r.Id,
+                    Id = r.Id,
                     Grade = grade,
                     User = new UserDto(r.User),
                     Group = new GroupDto(r.Group),

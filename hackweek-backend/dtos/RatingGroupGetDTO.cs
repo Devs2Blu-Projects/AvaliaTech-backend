@@ -2,7 +2,7 @@
 {
     public class RatingGroupGetDTO
     {
-        public int IdRating { get; set; }
+        public int Id { get; set; }
         public double Grade { get; set; }
         public GroupDto? Group { get; set; }
         public UserDto? User { get; set; }
