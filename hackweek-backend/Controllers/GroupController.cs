@@ -89,5 +89,20 @@ namespace hackweek_backend.Controllers
         {
             return Ok(await _service.GetAllEventGroupsByDate());
         }
+
+        [HttpPut("updateOrder")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> PutGroupOrder([FromBody] List<GroupsByDateDTO> groupOrder)
+        {
+            try
+            {
+                await _service.UpdateGroupOrder(groupOrder);
+                return Ok("Ordem atualizada com sucesso!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

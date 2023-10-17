@@ -144,8 +144,39 @@ namespace hackweek_backend.Services
 
         public void CalculateCriterionGradeByGroup(GroupModel group)
         {
-            List<RatingModel> ratingsByGroup = _context.Ratings.Where(r => r.GroupId == group.Id).ToList();
-            var propCriterion = _context.Criteria.Where(pc => pc.EventId == group.EventId).ToList(); 
+            var sumRatingCriteria = _context.Ratings
+                .Where(r => r.GroupId == group.Id)
+                .Include(r => r.RatingCriteria)
+                .SelectMany(r => r.RatingCriteria!)
+                .GroupBy(r => r.CriterionId)
+                .Select(gb => new
+                {
+                    gb.First().CriterionId,
+                    Count = gb.Count(),
+                    GradeSum = gb.Sum(r => r.Grade),
+                }).ToList();
+
+            foreach (var sumRatingCriterion in sumRatingCriteria)
+            {
+                var gr = _context.GroupRatings.FirstOrDefault(gp => gp.CriterionId == sumRatingCriterion.CriterionId);
+                if (gr == null)
+                {
+                    _context.GroupRatings.Add(new GroupRatingModel()
+                    {
+                        Grade = sumRatingCriterion.GradeSum / sumRatingCriterion.Count,
+                        GroupId = group.Id,
+                        CriterionId = sumRatingCriterion.CriterionId,
+                    });
+                }
+                else
+                {
+                    gr.Grade = sumRatingCriterion.GradeSum / sumRatingCriterion.Count;
+                }
+            }
+            _context.SaveChanges();
+
+            /*List<RatingModel> ratingsByGroup = _context.Ratings.Where(r => r.GroupId == group.Id).ToList();
+            var propCriterion = _context.Criteria.Where(pc => pc.EventId == group.EventId).ToList();
 
             _context.GroupRatings.Where(g => g.GroupId == group.Id).ExecuteDelete();
 
@@ -182,7 +213,7 @@ namespace hackweek_backend.Services
                     }
                 }
             }
-            _context.SaveChanges();
+            _context.SaveChanges();*/
         }
 
 
