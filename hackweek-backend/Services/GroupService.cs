@@ -44,7 +44,10 @@ namespace hackweek_backend.Services
             group.Team = request.Team;
             group.Language = request.Language;
             group.PropositionId = request.PropositionId;
-            group.ProjectName = request.ProjectName;
+
+            if (request.ProjectName != string.Empty)
+                group.ProjectName = request.ProjectName;
+
             group.ProjectDescription = request.ProjectDescription;
 
             await _context.SaveChangesAsync();
@@ -53,7 +56,7 @@ namespace hackweek_backend.Services
         public async Task<GroupDto?> GetGroupByUser(int idUser)
         {
             var group = await _context.Groups
-                .Include(g => g.Proposition).Include(g => g.GroupRatings).ThenInclude(gr => gr.Criterion)
+                .Include(g => g.Proposition).Include(g => g.User).Include(g => g.GroupRatings).ThenInclude(gr => gr.Criterion)
                 .FirstOrDefaultAsync(g => g.UserId == idUser);
 
             if (group == null) return null;
@@ -82,7 +85,12 @@ namespace hackweek_backend.Services
             }
             group.GroupRatings = group.GroupRatings.OrderBy(gr => gr.CriterionId).ToList();
 
-            return new GroupDto(group);
+            var dto = new GroupDto(group);
+
+            if ((group.User != null) && (group.User.Username == dto.ProjectName))
+                dto.ProjectName = string.Empty;
+
+            return dto;
         }
 
         public async Task<IEnumerable<GroupDto>> GetGroupsRanking(string role)
